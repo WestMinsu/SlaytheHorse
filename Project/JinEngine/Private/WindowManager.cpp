@@ -51,7 +51,7 @@ bool WindowManager::Init(int _windowWidth, int _windowHeight, JinEngine& engine)
     windowWidth = _windowWidth;
     windowHeight = _windowHeight;
 
-    window = glfwCreateWindow(windowWidth, windowHeight, "JIN ENGINE", nullptr, nullptr);
+    window = glfwCreateWindow(windowWidth, windowHeight, "Slay The Horse", nullptr, nullptr);
     if (!window)
     {
         JIN_ERR("Failed to create GLFW window");

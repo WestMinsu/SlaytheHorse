@@ -246,6 +246,14 @@
     <ClCompile Include="Card.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="BattleState.cpp" />
+    <ClInclude Include="..\SlaytheSpire\Card.h" />
+    <ClInclude Include="MainMenu.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Button.cpp" />
+    <ClCompile Include="Button.h" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

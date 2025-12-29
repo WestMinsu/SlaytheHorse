@@ -3,6 +3,7 @@
 #include "Engine.h"
 #include "BattleState.h" 
 #include "GameState.h"
+#include "MainMenu.h"
 
 int main(int argc, char* argv[])
 {
@@ -24,6 +25,7 @@ int main(int argc, char* argv[])
             return -1;
         }
     }
+
     catch (const std::exception&)
     {
         JIN_ERR("Invalid arguments. Width and height must be integers.");
@@ -46,6 +48,10 @@ int main(int argc, char* argv[])
     ctx.windowManager->SetBackgroundColor({ 0.2, 0.2, 0.4, 1 });
 
     ctx.stateManager->ChangeState(std::make_unique<BattleState>());
+
+    jinEngine.GetEngineContext().renderManager->RegisterFont("[Font]default", "Fonts/NanumPenScript-Regular.ttf", 50);
+
+    jinEngine.GetEngineContext().stateManager->ChangeState(std::make_unique<MainMenu>());
 
     jinEngine.Run();
 
