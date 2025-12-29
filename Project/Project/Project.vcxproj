@@ -237,10 +237,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\SlaytheSpire\Card.h" />
+    <ClInclude Include="BattleManager.h" />
+    <ClInclude Include="Card.h" />
+    <ClInclude Include="BattleState.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BattleManager.cpp" />
+    <ClCompile Include="Card.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="BattleState.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
