@@ -22,7 +22,8 @@ void Button::Init(const EngineContext& context)
     auto textObj = std::make_unique<TextObject>(font, initText, TextAlignH::Center, TextAlignV::Middle);
 
     textObj->GetTransform2D().SetPosition(initPosition);
-
+    textObj->SetColor({0.f, 0.f, 0.f, 1.f});
+    textObj->GetTransform2D().SetScale({0.8f, 0.8f});
     textObj->GetTransform2D().SetDepth(GetTransform2D().GetDepth() + 0.1f);
 
     if (ShouldIgnoreCamera())
