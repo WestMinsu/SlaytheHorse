@@ -25,4 +25,8 @@ private:
     TextObject* mainText = nullptr;
 
     void OnStartButtonClick(const EngineContext& context);
+    void OnExitButtonClick(const EngineContext& context);
+
+    bool isExiting = false;
+    float exitTimer = 0.0f;
 };

@@ -17,12 +17,20 @@ void MainMenu::Init(const EngineContext& engineContext)
 
 	mainText->GetTransform2D().SetPosition({ 0, 300.0f });
 
-	auto startButton = objectManager.AddObject(std::make_unique<Button>(glm::vec2(0, 0), glm::vec2(200.0f, 60.0f), "Start Game"), "[Object]button");
+	auto startButton = objectManager.AddObject(std::make_unique<Button>(glm::vec2(0, -100.f), glm::vec2(200.0f, 60.0f), "Start Game"), "[Object]button");
+	auto exitButton = objectManager.AddObject(std::make_unique<Button>(glm::vec2(0, -200.f), glm::vec2(200.0f, 60.0f), "Exit"), "[Object]button");
 
 	if (Button* startButtonPtr = static_cast<Button*>(startButton))
 	{
 		startButtonPtr->onClick = [this](const EngineContext& ctx) {
 			this->OnStartButtonClick(ctx);
+			};
+	}
+
+	if (Button* exitButtonPtr = static_cast<Button*>(exitButton))
+	{
+		exitButtonPtr->onClick = [this](const EngineContext& ctx) {
+			this->OnExitButtonClick(ctx);
 			};
 	}
 
@@ -37,6 +45,16 @@ void MainMenu::LateInit(const EngineContext& engineContext)
 
 void MainMenu::Update(float dt, const EngineContext& engineContext)
 {
+	if (isExiting)
+	{
+		exitTimer += dt;
+
+		if (exitTimer >= 1.3f)
+		{
+			engineContext.engine->RequestQuit(); 
+		}
+	}
+
 	objectManager.UpdateAll(dt, engineContext);
 }
 
@@ -62,7 +80,14 @@ void MainMenu::Unload(const EngineContext& engineContext)
 void MainMenu::OnStartButtonClick(const EngineContext& context)
 {
 	JIN_LOG("Start Button Clicked!");
-
+	context.soundManager->Play("GameStartSFX");
 	//context.stateManager->ChangeState(std::make_unique<PlayState>());
 }
 
+void MainMenu::OnExitButtonClick(const EngineContext& context)
+{
+	JIN_LOG("Exit Button Clicked!");
+	context.soundManager->Play("GameExitSFX");
+	isExiting = true;
+	exitTimer = 0.0f;
+}

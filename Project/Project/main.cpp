@@ -40,6 +40,9 @@ int main(int argc, char* argv[])
 
     jinEngine.GetEngineContext().stateManager->ChangeState(std::make_unique<MainMenu>());
 
+    jinEngine.GetEngineContext().soundManager->LoadSound("GameStartSFX", "TTS/GameStart.mp3", false);
+    jinEngine.GetEngineContext().soundManager->LoadSound("GameExitSFX", "TTS/GameExit.mp3", false);
+
     jinEngine.Run();
 
     return 0;
