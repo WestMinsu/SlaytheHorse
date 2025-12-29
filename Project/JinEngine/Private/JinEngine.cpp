@@ -49,7 +49,7 @@ void JinEngine::Run()
         float fps = 0.0f;
         if (timer.ShouldUpdateFPS(fps))
         {
-            windowManager.SetTitle("JinEngine - FPS: " + std::to_string(static_cast<int>(fps)));
+            windowManager.SetTitle("Slay The Horse - FPS: " + std::to_string(static_cast<int>(fps)));
         }
 
         windowManager.PollEvents();
