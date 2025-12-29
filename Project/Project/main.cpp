@@ -50,9 +50,6 @@ int main(int argc, char* argv[])
     ctx.windowManager->SetBackgroundColor({ 0.2, 0.2, 0.4, 1 });
     ctx.stateManager->ChangeState(std::make_unique<MainMenu>());
 
-    jinEngine.GetEngineContext().soundManager->LoadSound("GameStartSFX", "TTS/GameStart.mp3", false);
-    jinEngine.GetEngineContext().soundManager->LoadSound("GameExitSFX", "TTS/GameExit.mp3", false);
-
     jinEngine.Run();
 
     return 0;
