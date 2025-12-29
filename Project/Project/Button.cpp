@@ -1,18 +1,42 @@
 #include "Button.h"
 #include "GameState.h"
 
+Button::Button(const glm::vec2& position, const glm::vec2& size, const std::string& text)
+    :initPosition(position), initSize(size), initText(text) {}
+
 void Button::Init(const EngineContext& context)
 {
     SetMesh(context, "[EngineMesh]default");
-    SetMaterial(context, "[Material]Animation");
+    SetMaterial(context, "[Material]Button");
 
-    GetTransform2D().SetScale({ 100.0f, 50.0f }); 
-    GetTransform2D().SetPosition({ 400.0f, 300.0f });
+    GetTransform2D().SetScale(initSize);
+    GetTransform2D().SetPosition(initPosition);
 
     auto collider = std::make_unique<AABBCollider>(this, glm::vec2(1.0f, 1.0f));
     SetCollider(std::move(collider));
 
     SetIgnoreCamera(true, context.stateManager->GetCurrentState()->GetActiveCamera());
+
+    Font* font = context.renderManager->GetFontByTag("[Font]default");
+
+    auto textObj = std::make_unique<TextObject>(font, initText, TextAlignH::Center, TextAlignV::Middle);
+
+    textObj->GetTransform2D().SetPosition(initPosition);
+
+    textObj->GetTransform2D().SetDepth(GetTransform2D().GetDepth() + 0.1f);
+
+    if (ShouldIgnoreCamera())
+    {
+        textObj->SetIgnoreCamera(true, GetReferenceCamera());
+    }
+
+    GameState* currentState = context.stateManager->GetCurrentState();
+    if (currentState)
+    {
+        labelObject = static_cast<TextObject*>(
+            currentState->GetObjectManager().AddObject(std::move(textObj), GetTag() + "_Label")
+            );
+    }
 }
 
 void Button::Update(float dt, const EngineContext& context)
@@ -29,7 +53,7 @@ void Button::Update(float dt, const EngineContext& context)
         if (input->IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
             JIN_LOG("Button Clicked!");
-            if (onClick) onClick();
+            if (onClick) onClick(context);
         }
     }
     else

@@ -11,7 +11,22 @@ void MainMenu::Init(const EngineContext& engineContext)
 {
 	JIN_LOG("[MainMenu] init called");
 
-	auto startButton = objectManager.AddObject(std::make_unique<Button>(), "[Object]button");
+	engineContext.renderManager->RegisterTexture("[Texture]Button", "Textures/test1.png");
+	engineContext.renderManager->RegisterMaterial("[Material]Button", "[EngineShader]default_texture", { {"u_Texture","[Texture]Button"} });
+	mainText = static_cast<TextObject*>(objectManager.AddObject(std::make_unique<TextObject>(engineContext.renderManager->GetFontByTag("[Font]default"), "Slay The Horse", TextAlignH::Center, TextAlignV::Middle)));
+
+	mainText->GetTransform2D().SetPosition({ 0, 300.0f });
+
+	auto startButton = objectManager.AddObject(std::make_unique<Button>(glm::vec2(0, 0), glm::vec2(200.0f, 60.0f), "Start Game"), "[Object]button");
+
+	if (Button* startButtonPtr = static_cast<Button*>(startButton))
+	{
+		startButtonPtr->onClick = [this](const EngineContext& ctx) {
+			this->OnStartButtonClick(ctx);
+			};
+	}
+
+	engineContext.windowManager->SetBackgroundColor({0.2f, 0.2f, 0.2f, 0.2f });
 	
 }
 
@@ -43,3 +58,11 @@ void MainMenu::Unload(const EngineContext& engineContext)
 {
 	JIN_LOG("[MainMenu] unload update called");
 }
+
+void MainMenu::OnStartButtonClick(const EngineContext& context)
+{
+	JIN_LOG("Start Button Clicked!");
+
+	//context.stateManager->ChangeState(std::make_unique<PlayState>());
+}
+

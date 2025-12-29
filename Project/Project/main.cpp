@@ -36,6 +36,8 @@ int main(int argc, char* argv[])
     }
     jinEngine.RenderDebugDraws(false);
 
+    jinEngine.GetEngineContext().renderManager->RegisterFont("[Font]default", "Fonts/NanumPenScript-Regular.ttf", 50);
+
     jinEngine.GetEngineContext().stateManager->ChangeState(std::make_unique<MainMenu>());
 
     jinEngine.Run();

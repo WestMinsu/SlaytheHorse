@@ -23,5 +23,6 @@ public:
 
 private:
     TextObject* mainText = nullptr;
-    GameObject* cursor = nullptr;
+
+    void OnStartButtonClick(const EngineContext& context);
 };
