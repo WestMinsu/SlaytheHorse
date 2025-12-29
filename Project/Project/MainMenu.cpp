@@ -57,6 +57,17 @@ void MainMenu::Update(float dt, const EngineContext& engineContext)
 		}
 	}
 
+	if (isStarting)
+	{
+		startTimer += dt;
+
+		if (startTimer >= 1.f)
+		{
+			if (engineContext.stateManager != nullptr)
+				engineContext.stateManager->ChangeState(std::make_unique<BattleState>());
+		}
+	}
+
 	objectManager.UpdateAll(dt, engineContext);
 }
 
@@ -83,8 +94,8 @@ void MainMenu::OnStartButtonClick(const EngineContext& context)
 {
 	JIN_LOG("Start Button Clicked! Transition to BattleState.");
 	context.soundManager->Play("GameStartSFX");
-	if (context.stateManager != nullptr)
-		context.stateManager->ChangeState(std::make_unique<BattleState>());
+	isStarting = true;
+	startTimer = 0.0f;
 }
 
 void MainMenu::OnExitButtonClick(const EngineContext& context)

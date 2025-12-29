@@ -29,4 +29,7 @@ private:
 
     bool isExiting = false;
     float exitTimer = 0.0f;
+
+    bool isStarting = false;
+    float startTimer = 0.0f;
 };
