@@ -237,15 +237,20 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\SlaytheSpire\Card.h" />
     <ClInclude Include="InputField.h" />
+    <ClInclude Include="BattleManager.h" />
+    <ClInclude Include="Card.h" />
+    <ClInclude Include="BattleState.h" />
     <ClInclude Include="MainMenu.h" />
+    <ClInclude Include="Button.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Button.cpp" />
-    <ClCompile Include="Button.h" />
-    <ClCompile Include="InputField.cpp" />
+    <ClCompile Include="BattleManager.cpp" />
+    <ClCompile Include="Card.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="BattleState.cpp" />
+    <ClCompile Include="Button.cpp" />
+    <ClCompile Include="InputField.cpp" />
     <ClCompile Include="MainMenu.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
