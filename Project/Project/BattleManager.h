@@ -2,15 +2,23 @@
 #include <vector>
 #include <string>
 #include <memory>
-#include "Card.h"
-#include <iostream>
+
+class Card;
+struct EngineContext;
 
 class BattleManager
 {
 public:
-    void SetupDeck();
-    void ShowAllCardsInDeck();
+    void SetupDeck(const EngineContext& context);
+    void DrawCard(int count);
+
+    const std::vector<Card*>& GetHand() const
+    {
+        return hand;
+    }
 
 private:
-    std::vector<std::unique_ptr<Card>> deck;
+    std::vector<Card*> deck;        
+    std::vector<Card*> hand;       
+    std::vector<Card*> discardPile; 
 };

@@ -176,7 +176,7 @@
       <AdditionalUsingDirectories>
       </AdditionalUsingDirectories>
       <AdditionalIncludeDirectories>$(SolutionDir)JinEngine\public;$(SolutionDir)JinEngine\ThirdParty\Include</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -240,19 +240,15 @@
     <ClInclude Include="BattleManager.h" />
     <ClInclude Include="Card.h" />
     <ClInclude Include="BattleState.h" />
+    <ClInclude Include="MainMenu.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BattleManager.cpp" />
     <ClCompile Include="Card.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="BattleState.cpp" />
-    <ClInclude Include="..\SlaytheSpire\Card.h" />
-    <ClInclude Include="MainMenu.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Button.h" />
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="MainMenu.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

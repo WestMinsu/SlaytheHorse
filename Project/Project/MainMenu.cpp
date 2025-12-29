@@ -1,6 +1,8 @@
 #include "MainMenu.h"
 #include "Debug.h"
 #include "Button.h"
+#include "BattleState.h"
+#include "StateManager.h"
 
 void MainMenu::Load(const EngineContext& engineContext)
 {
@@ -61,8 +63,8 @@ void MainMenu::Unload(const EngineContext& engineContext)
 
 void MainMenu::OnStartButtonClick(const EngineContext& context)
 {
-	JIN_LOG("Start Button Clicked!");
+	JIN_LOG("Start Button Clicked! Transition to BattleState.");
 
-	//context.stateManager->ChangeState(std::make_unique<PlayState>());
+	if (context.stateManager != nullptr)
+		context.stateManager->ChangeState(std::make_unique<BattleState>());
 }
-

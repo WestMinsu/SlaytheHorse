@@ -12,7 +12,7 @@ Card::Card() : GameObject()
 
 void Card::Init(const EngineContext& engineContext)
 {
-    Font* font = engineContext.renderManager->GetFontByTag("[Font]default1");
+    Font* font = engineContext.renderManager->GetFontByTag("[Font]default");
 
     if (font == nullptr)
         return;
