@@ -1,0 +1,636 @@
+\doxysection{Mesh Class Reference}
+\hypertarget{class_mesh}{}\label{class_mesh}\index{Mesh@{Mesh}}
+
+
+GPU mesh wrapper that owns VAO/\+VBO/\+EBO and supports optional instanced rendering buffers.  
+
+
+
+
+{\ttfamily \#include $<$Mesh.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_mesh_a2fae383fefb7fe9f7c5fae8266e53e97}{Mesh}} (const std\+::vector$<$ \mbox{\hyperlink{struct_vertex}{Vertex}} $>$ \&vertices, const std\+::vector$<$ unsigned int $>$ \&indices=\{\}, \mbox{\hyperlink{_mesh_8h_a240c1924416689e5700ff0d9f30539d9}{Primitive\+Type}} \mbox{\hyperlink{class_mesh_a213090871212181b474b4a13d5b05d0d}{primitive\+Type}}=\mbox{\hyperlink{_mesh_8h_a240c1924416689e5700ff0d9f30539d9a7ca66fdfaad3eb33fc65d7490178f856}{Primitive\+Type\+::\+Triangles}})
+\begin{DoxyCompactList}\small\item\em Creates a mesh and uploads vertex/index data to the GPU. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_mesh_a5efe4da1a4c0971cfb037bd70304c303}{\texorpdfstring{$\sim$}{\string~}\+Mesh}} ()
+\begin{DoxyCompactList}\small\item\em Destroys GPU buffers owned by this mesh. \end{DoxyCompactList}\item 
+glm\+::vec2 \mbox{\hyperlink{class_mesh_a4a8b413a54afd1dcb83df7c5e2bbefc8}{Get\+Local\+Bounds\+Half\+Size}} () const
+\begin{DoxyCompactList}\small\item\em Returns half of the local-\/space axis-\/aligned bounds size. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{class_mesh_a30bf909bfd35c62be92824b7d3317326}{Bind\+VAO}} (bool instanced) const
+\begin{DoxyCompactList}\small\item\em Binds the appropriate VAO for drawing. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_mesh_a66fa02b2a66182031bb00a9aec134526}{Setup\+Instance\+Attributes}} ()
+\begin{DoxyCompactList}\small\item\em Configures vertex attribute state for instance data. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_mesh_abf84fe4ef735490769268685087e0e32}{Draw}} () const
+\begin{DoxyCompactList}\small\item\em Issues a non-\/instanced draw call using this mesh\textquotesingle{}s topology. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_mesh_ae2933e498cc249ab798bbf265dace77b}{Draw\+Instanced}} (\mbox{\hyperlink{_mesh_8h_a2d467e230729e9194068528ee1985327}{GLsizei}} instance\+Count) const
+\begin{DoxyCompactList}\small\item\em Issues an instanced draw call using this mesh\textquotesingle{}s topology. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_mesh_a6f0136c650ed60f43587e3d8d0c121aa}{Setup\+Mesh}} (const std\+::vector$<$ \mbox{\hyperlink{struct_vertex}{Vertex}} $>$ \&vertices, const std\+::vector$<$ unsigned int $>$ \&indices)
+\begin{DoxyCompactList}\small\item\em Uploads vertex/index data and configures base vertex attributes. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_mesh_ad097772f26af95c8f7070cbb0e8cbfef}{Compute\+Local\+Bounds}} (const std\+::vector$<$ \mbox{\hyperlink{struct_vertex}{Vertex}} $>$ \&vertices)
+\begin{DoxyCompactList}\small\item\em Computes an approximate local-\/space AABB half-\/size from vertex positions. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_mesh_a45673d65011bf8f70c0f7de2a37d7f6c}{Update\+Instance\+Buffer}} (const std\+::vector$<$ glm\+::mat4 $>$ \&transforms, const std\+::vector$<$ glm\+::vec4 $>$ \&colors, const std\+::vector$<$ glm\+::vec2 $>$ \&uv\+Offsets, const std\+::vector$<$ glm\+::vec2 $>$ \&uv\+Scales) const
+\begin{DoxyCompactList}\small\item\em Updates GPU instance buffers used for instanced drawing. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+friend \mbox{\hyperlink{class_mesh_aa36ea23707449cf3c872cafa9068a4de}{Material}}
+\item 
+friend \mbox{\hyperlink{class_mesh_a99cf3d4862433af3b73292a510a6a179}{Render\+Manager}}
+\item 
+\mbox{\hyperlink{_material_8h_a9b79d6d8dc8627e68412974748f1c08c}{GLuint}} \mbox{\hyperlink{class_mesh_a101a39d88bc5c8d33f0ebd6e77a60129}{vao}}
+\item 
+\mbox{\hyperlink{_material_8h_a9b79d6d8dc8627e68412974748f1c08c}{GLuint}} \mbox{\hyperlink{class_mesh_ad8eff04c857fc1f1f42584af599f8267}{vbo}}
+\item 
+\mbox{\hyperlink{_material_8h_a9b79d6d8dc8627e68412974748f1c08c}{GLuint}} \mbox{\hyperlink{class_mesh_a17bb0f1901ce2f3bc62e7d6d2ca9e2f7}{ebo}}
+\item 
+\mbox{\hyperlink{_mesh_8h_a2d467e230729e9194068528ee1985327}{GLsizei}} \mbox{\hyperlink{class_mesh_ae89f95e85ae7fa157545324aa5f5db7d}{index\+Count}}
+\item 
+\mbox{\hyperlink{_material_8h_a9b79d6d8dc8627e68412974748f1c08c}{GLuint}} \mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instance\+VAO}}
+\item 
+\mbox{\hyperlink{_material_8h_a9b79d6d8dc8627e68412974748f1c08c}{GLuint}} \mbox{\hyperlink{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5}{instance\+VBO}} \mbox{[}4\mbox{]}
+\item 
+bool \mbox{\hyperlink{class_mesh_a3153eeca2bbde0037c365662bbeb52f1}{use\+Index}}
+\item 
+\mbox{\hyperlink{_mesh_8h_a240c1924416689e5700ff0d9f30539d9}{Primitive\+Type}} \mbox{\hyperlink{class_mesh_a213090871212181b474b4a13d5b05d0d}{primitive\+Type}}
+\item 
+glm\+::vec2 \mbox{\hyperlink{class_mesh_ab9d13fdb38eedf8e33aefa9f61056e95}{local\+Half\+Size}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+GPU mesh wrapper that owns VAO/\+VBO/\+EBO and supports optional instanced rendering buffers. 
+
+\doxylink{class_mesh}{Mesh} encapsulates Open\+GL buffer objects and draw routines. It supports\+:
+\begin{DoxyItemize}
+\item Non-\/indexed and indexed rendering (use\+Index + ebo + index\+Count).
+\item A primitive topology (\doxylink{_mesh_8h_a240c1924416689e5700ff0d9f30539d9}{Primitive\+Type}) used for draw calls.
+\item A local-\/space bounds half-\/size (local\+Half\+Size) computed from vertex positions for culling/placement.
+\item Instanced rendering via a dedicated instance VAO and multiple instance VBOs\+:
+\begin{DoxyItemize}
+\item transforms (mat4)
+\item colors (vec4)
+\item uv\+Offsets (vec2)
+\item uv\+Scales (vec2)
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+Lifecycle and access\+:
+\begin{DoxyItemize}
+\item \doxylink{class_mesh}{Mesh} is constructed from CPU vertex/index arrays, uploads them to GPU, and computes local bounds.
+\item \doxylink{class_render_manager}{Render\+Manager} and \doxylink{class_material}{Material} are friends to allow them to bind and draw meshes efficiently. 
+\end{DoxyItemize}
+
+Definition at line \mbox{\hyperlink{_mesh_8h_source_l00058}{58}} of file \mbox{\hyperlink{_mesh_8h_source}{Mesh.\+h}}.
+
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_mesh_a2fae383fefb7fe9f7c5fae8266e53e97}\index{Mesh@{Mesh}!Mesh@{Mesh}}
+\index{Mesh@{Mesh}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{Mesh()}{Mesh()}}
+{\footnotesize\ttfamily \label{class_mesh_a2fae383fefb7fe9f7c5fae8266e53e97} 
+Mesh\+::\+Mesh (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ \mbox{\hyperlink{struct_vertex}{Vertex}} $>$ \&}]{vertices}{, }\item[{const std\+::vector$<$ unsigned int $>$ \&}]{indices}{ = {\ttfamily \{\}}, }\item[{\mbox{\hyperlink{_mesh_8h_a240c1924416689e5700ff0d9f30539d9}{Primitive\+Type}}}]{primitive\+Type}{ = {\ttfamily \mbox{\hyperlink{_mesh_8h_a240c1924416689e5700ff0d9f30539d9a7ca66fdfaad3eb33fc65d7490178f856}{Primitive\+Type\+::\+Triangles}}}}\end{DoxyParamCaption})}
+
+
+
+Creates a mesh and uploads vertex/index data to the GPU. 
+
+The constructor\+:
+\begin{DoxyItemize}
+\item Stores primitive\+Type.
+\item Creates and configures VAO/\+VBO (and EBO if indices are provided).
+\item Computes local bounds from the provided vertices (Compute\+Local\+Bounds).
+\item Prepares instance buffers/attributes so \doxylink{class_render_manager}{Render\+Manager} can draw instanced batches.
+\end{DoxyItemize}
+
+If indices is empty, the mesh is treated as non-\/indexed (use\+Index = false).
+
+
+\begin{DoxyParams}{Parameters}
+{\em vertices} & \doxylink{struct_vertex}{Vertex} array to upload. \\
+\hline
+{\em indices} & Optional index array. If non-\/empty, indexed drawing is enabled. \\
+\hline
+{\em primitive\+Type} & Primitive topology used for draw calls. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{_mesh_8cpp_source_l00019}{19}} of file \mbox{\hyperlink{_mesh_8cpp_source}{Mesh.\+cpp}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :\mbox{\hyperlink{class_mesh_a101a39d88bc5c8d33f0ebd6e77a60129}{vao}}(0),\ \mbox{\hyperlink{class_mesh_ad8eff04c857fc1f1f42584af599f8267}{vbo}}(0),\ \mbox{\hyperlink{class_mesh_a17bb0f1901ce2f3bc62e7d6d2ca9e2f7}{ebo}}(0),\ \mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}}(0),\ \mbox{\hyperlink{class_mesh_ae89f95e85ae7fa157545324aa5f5db7d}{indexCount}}(0),\ \mbox{\hyperlink{class_mesh_a3153eeca2bbde0037c365662bbeb52f1}{useIndex}}(\textcolor{keyword}{false}),\ \mbox{\hyperlink{class_mesh_a213090871212181b474b4a13d5b05d0d}{primitiveType}}(primitiveType\_) }
+\DoxyCodeLine{00020\ \{}
+\DoxyCodeLine{00021\ \ \ \ \ \mbox{\hyperlink{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5}{instanceVBO}}[0]\ =\ \mbox{\hyperlink{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5}{instanceVBO}}[1]\ =\ \mbox{\hyperlink{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5}{instanceVBO}}[2]\ =\ \mbox{\hyperlink{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5}{instanceVBO}}[3]\ =\ 0;}
+\DoxyCodeLine{00022\ \ \ \ \ \mbox{\hyperlink{class_mesh_a6f0136c650ed60f43587e3d8d0c121aa}{SetupMesh}}(vertices,\ indices);}
+\DoxyCodeLine{00023\ \ \ \ \ \mbox{\hyperlink{class_mesh_ad097772f26af95c8f7070cbb0e8cbfef}{ComputeLocalBounds}}(vertices);}
+\DoxyCodeLine{00024\ \}}
+
+\end{DoxyCode}
+\Hypertarget{class_mesh_a5efe4da1a4c0971cfb037bd70304c303}\index{Mesh@{Mesh}!````~Mesh@{\texorpdfstring{$\sim$}{\string~}Mesh}}
+\index{````~Mesh@{\texorpdfstring{$\sim$}{\string~}Mesh}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}Mesh()}{\string~Mesh()}}
+{\footnotesize\ttfamily \label{class_mesh_a5efe4da1a4c0971cfb037bd70304c303} 
+Mesh\+::\texorpdfstring{$\sim$}{\string~}\+Mesh (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Destroys GPU buffers owned by this mesh. 
+
+Deletes VAO/\+VBO/\+EBO and instance VAO/\+VBOs if they were created. The mesh must not be in use by the GPU when destroyed (standard Open\+GL lifetime rules). 
+
+Definition at line \mbox{\hyperlink{_mesh_8cpp_source_l00057}{57}} of file \mbox{\hyperlink{_mesh_8cpp_source}{Mesh.\+cpp}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00058\ \{}
+\DoxyCodeLine{00059\ \ \ \ \ glDeleteBuffers(1,\ \&\mbox{\hyperlink{class_mesh_a17bb0f1901ce2f3bc62e7d6d2ca9e2f7}{ebo}});}
+\DoxyCodeLine{00060\ \ \ \ \ glDeleteBuffers(1,\ \&\mbox{\hyperlink{class_mesh_ad8eff04c857fc1f1f42584af599f8267}{vbo}});}
+\DoxyCodeLine{00061\ \ \ \ \ glDeleteVertexArrays(1,\ \&\mbox{\hyperlink{class_mesh_a101a39d88bc5c8d33f0ebd6e77a60129}{vao}});}
+\DoxyCodeLine{00062\ \ \ \ \ glDeleteBuffers(4,\ \mbox{\hyperlink{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5}{instanceVBO}});}
+\DoxyCodeLine{00063\ \ \ \ \ glDeleteVertexArrays(1,\ \&\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}});}
+\DoxyCodeLine{00064\ \ \ \ \ \mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}}\ =\ \mbox{\hyperlink{class_mesh_a101a39d88bc5c8d33f0ebd6e77a60129}{vao}}\ =\ 0;}
+\DoxyCodeLine{00065\ \ \ \ \ \mbox{\hyperlink{class_mesh_a17bb0f1901ce2f3bc62e7d6d2ca9e2f7}{ebo}}\ =\ \mbox{\hyperlink{class_mesh_ad8eff04c857fc1f1f42584af599f8267}{vbo}}\ =\ 0;}
+\DoxyCodeLine{00066\ \ \ \ \ \mbox{\hyperlink{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5}{instanceVBO}}[0]\ =\ \mbox{\hyperlink{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5}{instanceVBO}}[1]\ =\ \mbox{\hyperlink{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5}{instanceVBO}}[2]\ =\ \mbox{\hyperlink{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5}{instanceVBO}}[3]\ =\ 0;}
+\DoxyCodeLine{00067\ \}}
+
+\end{DoxyCode}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_mesh_a30bf909bfd35c62be92824b7d3317326}\index{Mesh@{Mesh}!BindVAO@{BindVAO}}
+\index{BindVAO@{BindVAO}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{BindVAO()}{BindVAO()}}
+{\footnotesize\ttfamily \label{class_mesh_a30bf909bfd35c62be92824b7d3317326} 
+void Mesh\+::\+Bind\+VAO (\begin{DoxyParamCaption}\item[{bool}]{instanced}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Binds the appropriate VAO for drawing. 
+
+If instanced is true, binds instance\+VAO (which includes base vertex attributes + instance attributes). Otherwise binds the non-\/instanced VAO (vao).
+
+
+\begin{DoxyParams}{Parameters}
+{\em instanced} & Whether the draw call will be instanced. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{_mesh_8cpp_source_l00052}{52}} of file \mbox{\hyperlink{_mesh_8cpp_source}{Mesh.\+cpp}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00053\ \{}
+\DoxyCodeLine{00054\ \ \ \ \ instanced\ ?\ glBindVertexArray(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}})\ :\ glBindVertexArray(\mbox{\hyperlink{class_mesh_a101a39d88bc5c8d33f0ebd6e77a60129}{vao}});}
+\DoxyCodeLine{00055\ \}}
+
+\end{DoxyCode}
+\Hypertarget{class_mesh_ad097772f26af95c8f7070cbb0e8cbfef}\index{Mesh@{Mesh}!ComputeLocalBounds@{ComputeLocalBounds}}
+\index{ComputeLocalBounds@{ComputeLocalBounds}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{ComputeLocalBounds()}{ComputeLocalBounds()}}
+{\footnotesize\ttfamily \label{class_mesh_ad097772f26af95c8f7070cbb0e8cbfef} 
+void Mesh\+::\+Compute\+Local\+Bounds (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ \mbox{\hyperlink{struct_vertex}{Vertex}} $>$ \&}]{vertices}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [private]}}
+
+
+
+Computes an approximate local-\/space AABB half-\/size from vertex positions. 
+
+Behavior\+:
+\begin{DoxyItemize}
+\item If vertices is empty\+: local\+Half\+Size becomes (0.\+5, 0.\+5) as a conservative default.
+\item If vertices has one element\+: local\+Half\+Size becomes (0.\+0001, 0.\+0001) to avoid a zero-\/size bound.
+\item Otherwise\+: computes min/max over XY from all vertices and sets local\+Half\+Size = (max-\/min)\texorpdfstring{$\ast$}{*}0.5.
+\end{DoxyItemize}
+
+This function assumes mesh geometry is primarily 2D (XY plane), even though \doxylink{struct_vertex_a030819fdc241743bbd3e180a6b132ed3}{Vertex\+::position} is vec3.
+
+
+\begin{DoxyParams}{Parameters}
+{\em vertices} & \doxylink{struct_vertex}{Vertex} array used to compute bounds. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{_mesh_8h_source_l00175}{175}} of file \mbox{\hyperlink{_mesh_8h_source}{Mesh.\+h}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00176\ \ \ \ \ \{}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (vertices.empty())}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_mesh_ab9d13fdb38eedf8e33aefa9f61056e95}{localHalfSize}}\ =\ glm::vec2(0.5f);}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (vertices.size()\ ==\ 1)}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_mesh_ab9d13fdb38eedf8e33aefa9f61056e95}{localHalfSize}}\ =\ glm::vec2(0.0001f);}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00187\ }
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ glm::vec2\ minPos\ =\ vertices[0].position;}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ glm::vec2\ maxPos\ =\ vertices[1].position;}
+\DoxyCodeLine{00190\ }
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\&\ v\ :\ vertices)}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ \ \ \ \ glm::vec2\ pos\ =\ v.position;}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \ \ \ \ minPos\ =\ glm::min(minPos,\ pos);}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \ \ \ \ maxPos\ =\ glm::max(maxPos,\ pos);}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00197\ }
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ glm::vec2\ size\ =\ maxPos\ -\/\ minPos;}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_mesh_ab9d13fdb38eedf8e33aefa9f61056e95}{localHalfSize}}\ =\ size\ *\ 0.5f;}
+\DoxyCodeLine{00200\ \ \ \ \ \}}
+
+\end{DoxyCode}
+\Hypertarget{class_mesh_abf84fe4ef735490769268685087e0e32}\index{Mesh@{Mesh}!Draw@{Draw}}
+\index{Draw@{Draw}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{Draw()}{Draw()}}
+{\footnotesize\ttfamily \label{class_mesh_abf84fe4ef735490769268685087e0e32} 
+void Mesh\+::\+Draw (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Issues a non-\/instanced draw call using this mesh\textquotesingle{}s topology. 
+
+Uses either gl\+Draw\+Elements (if use\+Index is true) or gl\+Draw\+Arrays (if use\+Index is false), mapping primitive\+Type to the appropriate Open\+GL primitive. 
+
+Definition at line \mbox{\hyperlink{_mesh_8cpp_source_l00026}{26}} of file \mbox{\hyperlink{_mesh_8cpp_source}{Mesh.\+cpp}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00027\ \{}
+\DoxyCodeLine{00028\ \ \ \ \ \mbox{\hyperlink{class_mesh_a30bf909bfd35c62be92824b7d3317326}{BindVAO}}(\textcolor{keyword}{false});}
+\DoxyCodeLine{00029\ \ \ \ \ \mbox{\hyperlink{_shader_8h_aabcf3e059d4bfe03f96c378d2533c3ba}{GLenum}}\ mode\ =\ \mbox{\hyperlink{_mesh_8cpp_ab39cc2afcd825e405cee2a083d83b416}{ToGL}}(\mbox{\hyperlink{class_mesh_a213090871212181b474b4a13d5b05d0d}{primitiveType}});}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_mesh_a3153eeca2bbde0037c365662bbeb52f1}{useIndex}})}
+\DoxyCodeLine{00032\ \ \ \ \ \{}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ glDrawElements(mode,\ \mbox{\hyperlink{class_mesh_ae89f95e85ae7fa157545324aa5f5db7d}{indexCount}},\ GL\_UNSIGNED\_INT,\ 0);}
+\DoxyCodeLine{00034\ \ \ \ \ \}}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00036\ \ \ \ \ \{}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ glDrawArrays(mode,\ 0,\ \mbox{\hyperlink{class_mesh_ae89f95e85ae7fa157545324aa5f5db7d}{indexCount}});}
+\DoxyCodeLine{00038\ \ \ \ \ \}}
+\DoxyCodeLine{00039\ \}}
+
+\end{DoxyCode}
+\Hypertarget{class_mesh_ae2933e498cc249ab798bbf265dace77b}\index{Mesh@{Mesh}!DrawInstanced@{DrawInstanced}}
+\index{DrawInstanced@{DrawInstanced}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{DrawInstanced()}{DrawInstanced()}}
+{\footnotesize\ttfamily \label{class_mesh_ae2933e498cc249ab798bbf265dace77b} 
+void Mesh\+::\+Draw\+Instanced (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{_mesh_8h_a2d467e230729e9194068528ee1985327}{GLsizei}}}]{instance\+Count}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Issues an instanced draw call using this mesh\textquotesingle{}s topology. 
+
+Uses either gl\+Draw\+Elements\+Instanced (if use\+Index is true) or gl\+Draw\+Arrays\+Instanced (if use\+Index is false). Instance attribute buffers must have been updated via \doxylink{class_mesh_a45673d65011bf8f70c0f7de2a37d7f6c}{Update\+Instance\+Buffer()} prior to calling.
+
+
+\begin{DoxyParams}{Parameters}
+{\em instance\+Count} & Number of instances to draw. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{_mesh_8cpp_source_l00041}{41}} of file \mbox{\hyperlink{_mesh_8cpp_source}{Mesh.\+cpp}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00042\ \{}
+\DoxyCodeLine{00043\ \ \ \ \ \mbox{\hyperlink{class_mesh_a30bf909bfd35c62be92824b7d3317326}{BindVAO}}(\textcolor{keyword}{true});}
+\DoxyCodeLine{00044\ \ \ \ \ \mbox{\hyperlink{_shader_8h_aabcf3e059d4bfe03f96c378d2533c3ba}{GLenum}}\ mode\ =\ \mbox{\hyperlink{_mesh_8cpp_ab39cc2afcd825e405cee2a083d83b416}{ToGL}}(\mbox{\hyperlink{class_mesh_a213090871212181b474b4a13d5b05d0d}{primitiveType}});}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_mesh_a3153eeca2bbde0037c365662bbeb52f1}{useIndex}})}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ glDrawElementsInstanced(mode,\ \mbox{\hyperlink{class_mesh_ae89f95e85ae7fa157545324aa5f5db7d}{indexCount}},\ GL\_UNSIGNED\_INT,\ \textcolor{keyword}{nullptr},\ instanceCount);}
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ glDrawArraysInstanced(mode,\ 0,\ \mbox{\hyperlink{class_mesh_ae89f95e85ae7fa157545324aa5f5db7d}{indexCount}},\ instanceCount);}
+\DoxyCodeLine{00050\ \}}
+
+\end{DoxyCode}
+\Hypertarget{class_mesh_a4a8b413a54afd1dcb83df7c5e2bbefc8}\index{Mesh@{Mesh}!GetLocalBoundsHalfSize@{GetLocalBoundsHalfSize}}
+\index{GetLocalBoundsHalfSize@{GetLocalBoundsHalfSize}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{GetLocalBoundsHalfSize()}{GetLocalBoundsHalfSize()}}
+{\footnotesize\ttfamily \label{class_mesh_a4a8b413a54afd1dcb83df7c5e2bbefc8} 
+glm\+::vec2 Mesh\+::\+Get\+Local\+Bounds\+Half\+Size (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [nodiscard]}}
+
+
+
+Returns half of the local-\/space axis-\/aligned bounds size. 
+
+This value is computed from vertex positions by \doxylink{class_mesh_ad097772f26af95c8f7070cbb0e8cbfef}{Compute\+Local\+Bounds()}. It is typically used as an approximate local-\/space size for visibility culling and debug bounds.
+
+\begin{DoxyReturn}{Returns}
+Local bounds half-\/size in mesh local space. 
+\end{DoxyReturn}
+
+
+Definition at line \mbox{\hyperlink{_mesh_8h_source_l00099}{99}} of file \mbox{\hyperlink{_mesh_8h_source}{Mesh.\+h}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00099\ \{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_mesh_ab9d13fdb38eedf8e33aefa9f61056e95}{localHalfSize}};\ \}}
+
+\end{DoxyCode}
+\Hypertarget{class_mesh_a66fa02b2a66182031bb00a9aec134526}\index{Mesh@{Mesh}!SetupInstanceAttributes@{SetupInstanceAttributes}}
+\index{SetupInstanceAttributes@{SetupInstanceAttributes}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{SetupInstanceAttributes()}{SetupInstanceAttributes()}}
+{\footnotesize\ttfamily \label{class_mesh_a66fa02b2a66182031bb00a9aec134526} 
+void Mesh\+::\+Setup\+Instance\+Attributes (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Configures vertex attribute state for instance data. 
+
+Creates instance VAO/\+VBOs and sets up attribute pointers/divisors for\+:
+\begin{DoxyItemize}
+\item mat4 transform (usually split across 4 vec4 attributes)
+\item vec4 color
+\item vec2 uv offset
+\item vec2 uv scale
+\end{DoxyItemize}
+
+The exact attribute locations must match the shader convention used by this engine (e.\+g., attributes named "{}i\+\_\+\+Model"{}, etc.). 
+
+Definition at line \mbox{\hyperlink{_mesh_8cpp_source_l00069}{69}} of file \mbox{\hyperlink{_mesh_8cpp_source}{Mesh.\+cpp}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00070\ \{}
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keywordflow}{if}\ (!\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}})}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ glCreateVertexArrays(1,\ \&\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}});}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \ \ glVertexArrayVertexBuffer(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ 0,\ \mbox{\hyperlink{class_mesh_ad8eff04c857fc1f1f42584af599f8267}{vbo}},\ 0,\ \textcolor{keyword}{sizeof}(\mbox{\hyperlink{_shader_8h_a22fa67f5720e9bfbd075bd088285c531ab22b929ba52471a02d18bb3a4e4472e6}{Vertex}}));}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \ \ \ \ glEnableVertexArrayAttrib(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ 0);}
+\DoxyCodeLine{00077\ \ \ \ \ glVertexArrayAttribFormat(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ 0,\ 3,\ GL\_FLOAT,\ GL\_FALSE,\ offsetof(\mbox{\hyperlink{_shader_8h_a22fa67f5720e9bfbd075bd088285c531ab22b929ba52471a02d18bb3a4e4472e6}{Vertex}},\ position));}
+\DoxyCodeLine{00078\ \ \ \ \ glVertexArrayAttribBinding(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ 0,\ 0);}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \ \ glEnableVertexArrayAttrib(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ 1);}
+\DoxyCodeLine{00081\ \ \ \ \ glVertexArrayAttribFormat(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ 1,\ 2,\ GL\_FLOAT,\ GL\_FALSE,\ offsetof(\mbox{\hyperlink{_shader_8h_a22fa67f5720e9bfbd075bd088285c531ab22b929ba52471a02d18bb3a4e4472e6}{Vertex}},\ uv));}
+\DoxyCodeLine{00082\ \ \ \ \ glVertexArrayAttribBinding(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ 1,\ 0);}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_mesh_a3153eeca2bbde0037c365662bbeb52f1}{useIndex}}\ \&\&\ \mbox{\hyperlink{class_mesh_a17bb0f1901ce2f3bc62e7d6d2ca9e2f7}{ebo}})}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ glVertexArrayElementBuffer(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ \mbox{\hyperlink{class_mesh_a17bb0f1901ce2f3bc62e7d6d2ca9e2f7}{ebo}});}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keywordflow}{if}\ (!\mbox{\hyperlink{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5}{instanceVBO}}[0])}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ glCreateBuffers(4,\ \mbox{\hyperlink{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5}{instanceVBO}});}
+\DoxyCodeLine{00089\ \ \ \ \ \mbox{\hyperlink{_material_8h_a9b79d6d8dc8627e68412974748f1c08c}{GLuint}}\ loc;}
+\DoxyCodeLine{00090\ \ \ \ \ glVertexArrayVertexBuffer(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ 1,\ \mbox{\hyperlink{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5}{instanceVBO}}[0],\ 0,\ \textcolor{keyword}{sizeof}(glm::mat4));}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ 4;\ i++)}
+\DoxyCodeLine{00093\ \ \ \ \ \{}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ loc\ =\ 2\ +\ i;}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ glEnableVertexArrayAttrib(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ loc);}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ glVertexArrayAttribFormat(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ loc,\ 4,\ GL\_FLOAT,\ GL\_FALSE,\ \textcolor{keyword}{sizeof}(glm::vec4)\ *\ i);}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ glVertexArrayAttribBinding(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ loc,\ 1);}
+\DoxyCodeLine{00098\ \ \ \ \ \}}
+\DoxyCodeLine{00099\ \ \ \ \ glVertexArrayBindingDivisor(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ 1,\ 1);}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \ \ \ \ loc\ =\ 6;}
+\DoxyCodeLine{00102\ \ \ \ \ glVertexArrayVertexBuffer(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ 2,\ \mbox{\hyperlink{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5}{instanceVBO}}[1],\ 0,\ \textcolor{keyword}{sizeof}(glm::vec4));}
+\DoxyCodeLine{00103\ \ \ \ \ glEnableVertexArrayAttrib(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ loc);}
+\DoxyCodeLine{00104\ \ \ \ \ glVertexArrayAttribFormat(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ loc,\ 4,\ GL\_FLOAT,\ GL\_FALSE,\ 0);}
+\DoxyCodeLine{00105\ \ \ \ \ glVertexArrayAttribBinding(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ loc,\ 2);}
+\DoxyCodeLine{00106\ \ \ \ \ glVertexArrayBindingDivisor(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ 2,\ 1);}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \ \ \ \ loc\ =\ 7;}
+\DoxyCodeLine{00109\ \ \ \ \ glVertexArrayVertexBuffer(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ 3,\ \mbox{\hyperlink{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5}{instanceVBO}}[2],\ 0,\ \textcolor{keyword}{sizeof}(glm::vec2));}
+\DoxyCodeLine{00110\ \ \ \ \ glEnableVertexArrayAttrib(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ loc);}
+\DoxyCodeLine{00111\ \ \ \ \ glVertexArrayAttribFormat(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ loc,\ 2,\ GL\_FLOAT,\ GL\_FALSE,\ 0);}
+\DoxyCodeLine{00112\ \ \ \ \ glVertexArrayAttribBinding(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ loc,\ 3);}
+\DoxyCodeLine{00113\ \ \ \ \ glVertexArrayBindingDivisor(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ 3,\ 1);}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \ \ \ \ loc\ =\ 8;}
+\DoxyCodeLine{00116\ \ \ \ \ glVertexArrayVertexBuffer(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ 4,\ \mbox{\hyperlink{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5}{instanceVBO}}[3],\ 0,\ \textcolor{keyword}{sizeof}(glm::vec2));}
+\DoxyCodeLine{00117\ \ \ \ \ glEnableVertexArrayAttrib(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ loc);}
+\DoxyCodeLine{00118\ \ \ \ \ glVertexArrayAttribFormat(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ loc,\ 2,\ GL\_FLOAT,\ GL\_FALSE,\ 0);}
+\DoxyCodeLine{00119\ \ \ \ \ glVertexArrayAttribBinding(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ loc,\ 4);}
+\DoxyCodeLine{00120\ \ \ \ \ glVertexArrayBindingDivisor(\mbox{\hyperlink{class_mesh_ad41509844e200245ce71b4cc5441c504}{instanceVAO}},\ 4,\ 1);}
+\DoxyCodeLine{00121\ \}}
+
+\end{DoxyCode}
+\Hypertarget{class_mesh_a6f0136c650ed60f43587e3d8d0c121aa}\index{Mesh@{Mesh}!SetupMesh@{SetupMesh}}
+\index{SetupMesh@{SetupMesh}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{SetupMesh()}{SetupMesh()}}
+{\footnotesize\ttfamily \label{class_mesh_a6f0136c650ed60f43587e3d8d0c121aa} 
+void Mesh\+::\+Setup\+Mesh (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ \mbox{\hyperlink{struct_vertex}{Vertex}} $>$ \&}]{vertices}{, }\item[{const std\+::vector$<$ unsigned int $>$ \&}]{indices}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Uploads vertex/index data and configures base vertex attributes. 
+
+Creates and binds vao/vbo and uploads the vertex array. If indices is non-\/empty, creates/binds ebo and uploads indices, enabling indexed rendering and setting index\+Count.
+
+Also configures vertex attribute pointers for the \doxylink{struct_vertex}{Vertex} layout (position + uv).
+
+
+\begin{DoxyParams}{Parameters}
+{\em vertices} & \doxylink{struct_vertex}{Vertex} array to upload. \\
+\hline
+{\em indices} & Index array to upload (may be empty). \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{_mesh_8cpp_source_l00124}{124}} of file \mbox{\hyperlink{_mesh_8cpp_source}{Mesh.\+cpp}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00125\ \{}
+\DoxyCodeLine{00126\ \ \ \ \ \mbox{\hyperlink{class_mesh_a3153eeca2bbde0037c365662bbeb52f1}{useIndex}}\ =\ !indices.empty();}
+\DoxyCodeLine{00127\ \ \ \ \ \mbox{\hyperlink{class_mesh_ae89f95e85ae7fa157545324aa5f5db7d}{indexCount}}\ =\ \mbox{\hyperlink{class_mesh_a3153eeca2bbde0037c365662bbeb52f1}{useIndex}}\ ?\ \textcolor{keyword}{static\_cast<}\mbox{\hyperlink{_mesh_8h_a2d467e230729e9194068528ee1985327}{GLsizei}}\textcolor{keyword}{>}(indices.size())\ :\ static\_cast<\mbox{\hyperlink{_mesh_8h_a2d467e230729e9194068528ee1985327}{GLsizei}}>(vertices.size());}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \ \ \ \ glCreateVertexArrays(1,\ \&\mbox{\hyperlink{class_mesh_a101a39d88bc5c8d33f0ebd6e77a60129}{vao}});}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \ \ \ \ glCreateBuffers(1,\ \&\mbox{\hyperlink{class_mesh_ad8eff04c857fc1f1f42584af599f8267}{vbo}});}
+\DoxyCodeLine{00132\ \ \ \ \ glNamedBufferData(\mbox{\hyperlink{class_mesh_ad8eff04c857fc1f1f42584af599f8267}{vbo}},\ vertices.size()\ *\ \textcolor{keyword}{sizeof}(\mbox{\hyperlink{_shader_8h_a22fa67f5720e9bfbd075bd088285c531ab22b929ba52471a02d18bb3a4e4472e6}{Vertex}}),\ vertices.data(),\ GL\_STATIC\_DRAW);}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \ \ glVertexArrayVertexBuffer(\mbox{\hyperlink{class_mesh_a101a39d88bc5c8d33f0ebd6e77a60129}{vao}},\ 0,\ \mbox{\hyperlink{class_mesh_ad8eff04c857fc1f1f42584af599f8267}{vbo}},\ 0,\ \ \textcolor{keyword}{sizeof}(\mbox{\hyperlink{_shader_8h_a22fa67f5720e9bfbd075bd088285c531ab22b929ba52471a02d18bb3a4e4472e6}{Vertex}}));}
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00136\ \ \ \ \ glEnableVertexArrayAttrib(\mbox{\hyperlink{class_mesh_a101a39d88bc5c8d33f0ebd6e77a60129}{vao}},\ 0);}
+\DoxyCodeLine{00137\ \ \ \ \ glVertexArrayAttribFormat(\mbox{\hyperlink{class_mesh_a101a39d88bc5c8d33f0ebd6e77a60129}{vao}},\ 0,\ 3,\ GL\_FLOAT,\ GL\_FALSE,\ offsetof(\mbox{\hyperlink{_shader_8h_a22fa67f5720e9bfbd075bd088285c531ab22b929ba52471a02d18bb3a4e4472e6}{Vertex}},\ position));}
+\DoxyCodeLine{00138\ \ \ \ \ glVertexArrayAttribBinding(\mbox{\hyperlink{class_mesh_a101a39d88bc5c8d33f0ebd6e77a60129}{vao}},\ 0,\ 0);}
+\DoxyCodeLine{00139\ }
+\DoxyCodeLine{00140\ \ \ \ \ glEnableVertexArrayAttrib(\mbox{\hyperlink{class_mesh_a101a39d88bc5c8d33f0ebd6e77a60129}{vao}},\ 1);}
+\DoxyCodeLine{00141\ \ \ \ \ glVertexArrayAttribFormat(\mbox{\hyperlink{class_mesh_a101a39d88bc5c8d33f0ebd6e77a60129}{vao}},\ 1,\ 2,\ GL\_FLOAT,\ GL\_FALSE,\ offsetof(\mbox{\hyperlink{_shader_8h_a22fa67f5720e9bfbd075bd088285c531ab22b929ba52471a02d18bb3a4e4472e6}{Vertex}},\ uv));}
+\DoxyCodeLine{00142\ \ \ \ \ glVertexArrayAttribBinding(\mbox{\hyperlink{class_mesh_a101a39d88bc5c8d33f0ebd6e77a60129}{vao}},\ 1,\ 0);}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_mesh_a3153eeca2bbde0037c365662bbeb52f1}{useIndex}})}
+\DoxyCodeLine{00145\ \ \ \ \ \{}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ glCreateBuffers(1,\ \&\mbox{\hyperlink{class_mesh_a17bb0f1901ce2f3bc62e7d6d2ca9e2f7}{ebo}});}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ glNamedBufferData(\mbox{\hyperlink{class_mesh_a17bb0f1901ce2f3bc62e7d6d2ca9e2f7}{ebo}},\ indices.size()\ *\ \textcolor{keyword}{sizeof}(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}),\ indices.data(),\ GL\_STATIC\_DRAW);}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ glVertexArrayElementBuffer(\mbox{\hyperlink{class_mesh_a101a39d88bc5c8d33f0ebd6e77a60129}{vao}},\ \mbox{\hyperlink{class_mesh_a17bb0f1901ce2f3bc62e7d6d2ca9e2f7}{ebo}});}
+\DoxyCodeLine{00149\ \ \ \ \ \}}
+\DoxyCodeLine{00150\ \}}
+
+\end{DoxyCode}
+\Hypertarget{class_mesh_a45673d65011bf8f70c0f7de2a37d7f6c}\index{Mesh@{Mesh}!UpdateInstanceBuffer@{UpdateInstanceBuffer}}
+\index{UpdateInstanceBuffer@{UpdateInstanceBuffer}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{UpdateInstanceBuffer()}{UpdateInstanceBuffer()}}
+{\footnotesize\ttfamily \label{class_mesh_a45673d65011bf8f70c0f7de2a37d7f6c} 
+void Mesh\+::\+Update\+Instance\+Buffer (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ glm\+::mat4 $>$ \&}]{transforms}{, }\item[{const std\+::vector$<$ glm\+::vec4 $>$ \&}]{colors}{, }\item[{const std\+::vector$<$ glm\+::vec2 $>$ \&}]{uv\+Offsets}{, }\item[{const std\+::vector$<$ glm\+::vec2 $>$ \&}]{uv\+Scales}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Updates GPU instance buffers used for instanced drawing. 
+
+Uploads per-\/instance arrays into instance\+VBO buffers so \doxylink{class_mesh_ae2933e498cc249ab798bbf265dace77b}{Draw\+Instanced()} can be executed. All arrays are expected to have the same length and match instance\+Count used in \doxylink{class_mesh_ae2933e498cc249ab798bbf265dace77b}{Draw\+Instanced()}.
+
+Typical contents\+:
+\begin{DoxyItemize}
+\item transforms\+: model matrices for each instance.
+\item colors\+: per-\/instance color multiplier.
+\item uv\+Offsets / uv\+Scales\+: per-\/instance sprite sheet UV transform.
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em transforms} & Per-\/instance model matrices. \\
+\hline
+{\em colors} & Per-\/instance colors. \\
+\hline
+{\em uv\+Offsets} & Per-\/instance UV offsets. \\
+\hline
+{\em uv\+Scales} & Per-\/instance UV scales. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{_mesh_8cpp_source_l00152}{152}} of file \mbox{\hyperlink{_mesh_8cpp_source}{Mesh.\+cpp}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00153\ \{}
+\DoxyCodeLine{00154\ \ \ \ \ glNamedBufferData(\mbox{\hyperlink{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5}{instanceVBO}}[0],\ transforms.size()\ *\ \textcolor{keyword}{sizeof}(glm::mat4),\ transforms.data(),\ GL\_DYNAMIC\_DRAW);}
+\DoxyCodeLine{00155\ \ \ \ \ glNamedBufferData(\mbox{\hyperlink{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5}{instanceVBO}}[1],\ colors.size()\ *\ \textcolor{keyword}{sizeof}(glm::vec4),\ colors.data(),\ GL\_DYNAMIC\_DRAW);}
+\DoxyCodeLine{00156\ \ \ \ \ glNamedBufferData(\mbox{\hyperlink{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5}{instanceVBO}}[2],\ uvOffsets.size()\ *\ \textcolor{keyword}{sizeof}(glm::vec2),\ uvOffsets.data(),\ GL\_DYNAMIC\_DRAW);}
+\DoxyCodeLine{00157\ \ \ \ \ glNamedBufferData(\mbox{\hyperlink{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5}{instanceVBO}}[3],\ uvScales.size()\ *\ \textcolor{keyword}{sizeof}(glm::vec2),\ uvScales.data(),\ GL\_DYNAMIC\_DRAW);}
+\DoxyCodeLine{00158\ \}}
+
+\end{DoxyCode}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_mesh_a17bb0f1901ce2f3bc62e7d6d2ca9e2f7}\index{Mesh@{Mesh}!ebo@{ebo}}
+\index{ebo@{ebo}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{ebo}{ebo}}
+{\footnotesize\ttfamily \label{class_mesh_a17bb0f1901ce2f3bc62e7d6d2ca9e2f7} 
+\mbox{\hyperlink{_material_8h_a9b79d6d8dc8627e68412974748f1c08c}{GLuint}} Mesh\+::ebo\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_mesh_8h_source_l00223}{223}} of file \mbox{\hyperlink{_mesh_8h_source}{Mesh.\+h}}.
+
+\Hypertarget{class_mesh_ae89f95e85ae7fa157545324aa5f5db7d}\index{Mesh@{Mesh}!indexCount@{indexCount}}
+\index{indexCount@{indexCount}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{indexCount}{indexCount}}
+{\footnotesize\ttfamily \label{class_mesh_ae89f95e85ae7fa157545324aa5f5db7d} 
+\mbox{\hyperlink{_mesh_8h_a2d467e230729e9194068528ee1985327}{GLsizei}} Mesh\+::index\+Count\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_mesh_8h_source_l00224}{224}} of file \mbox{\hyperlink{_mesh_8h_source}{Mesh.\+h}}.
+
+\Hypertarget{class_mesh_ad41509844e200245ce71b4cc5441c504}\index{Mesh@{Mesh}!instanceVAO@{instanceVAO}}
+\index{instanceVAO@{instanceVAO}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{instanceVAO}{instanceVAO}}
+{\footnotesize\ttfamily \label{class_mesh_ad41509844e200245ce71b4cc5441c504} 
+\mbox{\hyperlink{_material_8h_a9b79d6d8dc8627e68412974748f1c08c}{GLuint}} Mesh\+::instance\+VAO\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_mesh_8h_source_l00226}{226}} of file \mbox{\hyperlink{_mesh_8h_source}{Mesh.\+h}}.
+
+\Hypertarget{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5}\index{Mesh@{Mesh}!instanceVBO@{instanceVBO}}
+\index{instanceVBO@{instanceVBO}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{instanceVBO}{instanceVBO}}
+{\footnotesize\ttfamily \label{class_mesh_a33810b4cdfaae0d1eb1ada168cd3c1a5} 
+\mbox{\hyperlink{_material_8h_a9b79d6d8dc8627e68412974748f1c08c}{GLuint}} Mesh\+::instance\+VBO\mbox{[}4\mbox{]}\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_mesh_8h_source_l00227}{227}} of file \mbox{\hyperlink{_mesh_8h_source}{Mesh.\+h}}.
+
+\Hypertarget{class_mesh_ab9d13fdb38eedf8e33aefa9f61056e95}\index{Mesh@{Mesh}!localHalfSize@{localHalfSize}}
+\index{localHalfSize@{localHalfSize}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{localHalfSize}{localHalfSize}}
+{\footnotesize\ttfamily \label{class_mesh_ab9d13fdb38eedf8e33aefa9f61056e95} 
+glm\+::vec2 Mesh\+::local\+Half\+Size\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_mesh_8h_source_l00232}{232}} of file \mbox{\hyperlink{_mesh_8h_source}{Mesh.\+h}}.
+
+\Hypertarget{class_mesh_aa36ea23707449cf3c872cafa9068a4de}\index{Mesh@{Mesh}!Material@{Material}}
+\index{Material@{Material}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{Material}{Material}}
+{\footnotesize\ttfamily \label{class_mesh_aa36ea23707449cf3c872cafa9068a4de} 
+friend Mesh\+::\+Material\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_mesh_8h_source_l00059}{59}} of file \mbox{\hyperlink{_mesh_8h_source}{Mesh.\+h}}.
+
+\Hypertarget{class_mesh_a213090871212181b474b4a13d5b05d0d}\index{Mesh@{Mesh}!primitiveType@{primitiveType}}
+\index{primitiveType@{primitiveType}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{primitiveType}{primitiveType}}
+{\footnotesize\ttfamily \label{class_mesh_a213090871212181b474b4a13d5b05d0d} 
+\mbox{\hyperlink{_mesh_8h_a240c1924416689e5700ff0d9f30539d9}{Primitive\+Type}} Mesh\+::primitive\+Type\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_mesh_8h_source_l00231}{231}} of file \mbox{\hyperlink{_mesh_8h_source}{Mesh.\+h}}.
+
+\Hypertarget{class_mesh_a99cf3d4862433af3b73292a510a6a179}\index{Mesh@{Mesh}!RenderManager@{RenderManager}}
+\index{RenderManager@{RenderManager}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{RenderManager}{RenderManager}}
+{\footnotesize\ttfamily \label{class_mesh_a99cf3d4862433af3b73292a510a6a179} 
+friend Mesh\+::\+Render\+Manager\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_mesh_8h_source_l00060}{60}} of file \mbox{\hyperlink{_mesh_8h_source}{Mesh.\+h}}.
+
+\Hypertarget{class_mesh_a3153eeca2bbde0037c365662bbeb52f1}\index{Mesh@{Mesh}!useIndex@{useIndex}}
+\index{useIndex@{useIndex}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{useIndex}{useIndex}}
+{\footnotesize\ttfamily \label{class_mesh_a3153eeca2bbde0037c365662bbeb52f1} 
+bool Mesh\+::use\+Index\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_mesh_8h_source_l00229}{229}} of file \mbox{\hyperlink{_mesh_8h_source}{Mesh.\+h}}.
+
+\Hypertarget{class_mesh_a101a39d88bc5c8d33f0ebd6e77a60129}\index{Mesh@{Mesh}!vao@{vao}}
+\index{vao@{vao}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{vao}{vao}}
+{\footnotesize\ttfamily \label{class_mesh_a101a39d88bc5c8d33f0ebd6e77a60129} 
+\mbox{\hyperlink{_material_8h_a9b79d6d8dc8627e68412974748f1c08c}{GLuint}} Mesh\+::vao\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_mesh_8h_source_l00221}{221}} of file \mbox{\hyperlink{_mesh_8h_source}{Mesh.\+h}}.
+
+\Hypertarget{class_mesh_ad8eff04c857fc1f1f42584af599f8267}\index{Mesh@{Mesh}!vbo@{vbo}}
+\index{vbo@{vbo}!Mesh@{Mesh}}
+\doxysubsubsection{\texorpdfstring{vbo}{vbo}}
+{\footnotesize\ttfamily \label{class_mesh_ad8eff04c857fc1f1f42584af599f8267} 
+\mbox{\hyperlink{_material_8h_a9b79d6d8dc8627e68412974748f1c08c}{GLuint}} Mesh\+::vbo\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Definition at line \mbox{\hyperlink{_mesh_8h_source_l00222}{222}} of file \mbox{\hyperlink{_mesh_8h_source}{Mesh.\+h}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Project/\+Jin\+Engine/\+Public/\mbox{\hyperlink{_mesh_8h}{Mesh.\+h}}\item 
+Project/\+Jin\+Engine/\+Private/\mbox{\hyperlink{_mesh_8cpp}{Mesh.\+cpp}}\end{DoxyCompactItemize}

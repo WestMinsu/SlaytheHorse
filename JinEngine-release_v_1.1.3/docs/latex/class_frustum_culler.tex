@@ -1,0 +1,88 @@
+\doxysection{Frustum\+Culler Class Reference}
+\hypertarget{class_frustum_culler}{}\label{class_frustum_culler}\index{FrustumCuller@{FrustumCuller}}
+
+
+Simple visibility culling utility based on a \doxylink{class_camera2_d}{Camera2D} view test and object bounding radius.  
+
+
+
+
+{\ttfamily \#include $<$Render\+Manager.\+h$>$}
+
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \mbox{\hyperlink{class_frustum_culler_a81c3d9c4516d7695b6988c64badf824d}{Cull\+Visible}} (const \mbox{\hyperlink{class_camera2_d}{Camera2D}} \&camera, const std\+::vector$<$ \mbox{\hyperlink{class_object}{Object}} \texorpdfstring{$\ast$}{*} $>$ \&all\+Objects, std\+::vector$<$ \mbox{\hyperlink{class_object}{Object}} \texorpdfstring{$\ast$}{*} $>$ \&out\+Visible\+List, glm\+::vec2 viewport\+Size)
+\begin{DoxyCompactList}\small\item\em Builds a list of objects visible to the camera. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Simple visibility culling utility based on a \doxylink{class_camera2_d}{Camera2D} view test and object bounding radius. 
+
+\doxylink{class_frustum_culler_a81c3d9c4516d7695b6988c64badf824d}{Cull\+Visible()} filters objects using\+:
+\begin{DoxyItemize}
+\item Is\+Alive() and Is\+Visible() checks
+\item Should\+Ignore\+Camera()\+: such objects are always included
+\item Camera2\+D\+::\+Is\+In\+View(position, radius, viewport\+Size) for camera-\/relative objects
+\end{DoxyItemize}
+
+The output list is cleared and rebuilt every call. 
+
+Definition at line \mbox{\hyperlink{_render_manager_8h_source_l00745}{745}} of file \mbox{\hyperlink{_render_manager_8h_source}{Render\+Manager.\+h}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_frustum_culler_a81c3d9c4516d7695b6988c64badf824d}\index{FrustumCuller@{FrustumCuller}!CullVisible@{CullVisible}}
+\index{CullVisible@{CullVisible}!FrustumCuller@{FrustumCuller}}
+\doxysubsubsection{\texorpdfstring{CullVisible()}{CullVisible()}}
+{\footnotesize\ttfamily \label{class_frustum_culler_a81c3d9c4516d7695b6988c64badf824d} 
+void Frustum\+Culler\+::\+Cull\+Visible (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_camera2_d}{Camera2D}} \&}]{camera}{, }\item[{const std\+::vector$<$ \mbox{\hyperlink{class_object}{Object}} \texorpdfstring{$\ast$}{*} $>$ \&}]{all\+Objects}{, }\item[{std\+::vector$<$ \mbox{\hyperlink{class_object}{Object}} \texorpdfstring{$\ast$}{*} $>$ \&}]{out\+Visible\+List}{, }\item[{glm\+::vec2}]{viewport\+Size}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Builds a list of objects visible to the camera. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em camera} & Camera used for view test. \\
+\hline
+{\em all\+Objects} & Input list of candidate objects. \\
+\hline
+{\em out\+Visible\+List} & Output list that will be cleared and filled with visible objects. \\
+\hline
+{\em viewport\+Size} & Viewport size used by \doxylink{class_camera2_d_ac59db8b285e9e7c9646b6e369cfda825}{Camera2\+D\+::\+Is\+In\+View}. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{_render_manager_8cpp_source_l00130}{130}} of file \mbox{\hyperlink{_render_manager_8cpp_source}{Render\+Manager.\+cpp}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00132\ \{}
+\DoxyCodeLine{00133\ \ \ \ \ outVisibleList.clear();}
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{keywordflow}{for}\ (Object*\ obj\ :\ allObjects)}
+\DoxyCodeLine{00135\ \ \ \ \ \{}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!obj-\/>IsAlive()\ ||\ !obj-\/>IsVisible())}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (obj-\/>ShouldIgnoreCamera())}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \ \ \ \ outVisibleList.push\_back(obj);}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ glm::vec2\&\ pos\ =\ obj-\/>GetWorldPosition();}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ radius\ =\ obj-\/>GetBoundingRadius();}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (camera.\mbox{\hyperlink{class_camera2_d_ac59db8b285e9e7c9646b6e369cfda825}{IsInView}}(pos,\ radius,\ viewportSize))}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \ \ \ \ outVisibleList.push\_back(obj);}
+\DoxyCodeLine{00148\ \ \ \ \ \}}
+\DoxyCodeLine{00149\ \}}
+
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Project/\+Jin\+Engine/\+Public/\mbox{\hyperlink{_render_manager_8h}{Render\+Manager.\+h}}\item 
+Project/\+Jin\+Engine/\+Private/\mbox{\hyperlink{_render_manager_8cpp}{Render\+Manager.\+cpp}}\end{DoxyCompactItemize}

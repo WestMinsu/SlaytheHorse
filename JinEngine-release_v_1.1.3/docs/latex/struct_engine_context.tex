@@ -1,0 +1,140 @@
+\doxysection{Engine\+Context Struct Reference}
+\hypertarget{struct_engine_context}{}\label{struct_engine_context}\index{EngineContext@{EngineContext}}
+
+
+Aggregates pointers to core engine subsystems.  
+
+
+
+
+{\ttfamily \#include $<$Engine\+Context.\+h$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_state_manager}{State\+Manager}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{struct_engine_context_a67f96c1b09ab0393d4f8434900d7419a}{state\+Manager}} = nullptr
+\begin{DoxyCompactList}\small\item\em Pointer to the \doxylink{class_state_manager}{State\+Manager} responsible for game state transitions. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_window_manager}{Window\+Manager}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{struct_engine_context_ab6fa006055c2a224931059f7ed840bed}{window\+Manager}} = nullptr
+\begin{DoxyCompactList}\small\item\em Pointer to the \doxylink{class_window_manager}{Window\+Manager} handling window creation and events. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_input_manager}{Input\+Manager}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{struct_engine_context_a9c8f61ef311c6f84a93d342eaaa1864a}{input\+Manager}} = nullptr
+\begin{DoxyCompactList}\small\item\em Pointer to the \doxylink{class_input_manager}{Input\+Manager} handling keyboard and mouse input. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_render_manager}{Render\+Manager}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{struct_engine_context_a8f4c861adc4684975fa767ae4723e095}{render\+Manager}} = nullptr
+\begin{DoxyCompactList}\small\item\em Pointer to the \doxylink{class_render_manager}{Render\+Manager} responsible for rendering operations. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_sound_manager}{Sound\+Manager}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{struct_engine_context_aa5985216cfd74ab389769abc5a5fdfb6}{sound\+Manager}} = nullptr
+\begin{DoxyCompactList}\small\item\em Pointer to the \doxylink{class_sound_manager}{Sound\+Manager} handling audio playback and control. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_jin_engine}{Jin\+Engine}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{struct_engine_context_a9f2c2e2e2f267e5a86ecb50124cca61e}{engine}} = nullptr
+\begin{DoxyCompactList}\small\item\em Pointer to the core \doxylink{class_jin_engine}{Jin\+Engine} instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Aggregates pointers to core engine subsystems. 
+
+\doxylink{struct_engine_context}{Engine\+Context} acts as a lightweight dependency container that is passed throughout the engine during update, render, and lifecycle calls.
+
+It provides unified access to major engine systems such as\+:
+\begin{DoxyItemize}
+\item State management
+\item Window and input handling
+\item Rendering
+\item Audio
+\item Core engine control
+\end{DoxyItemize}
+
+\doxylink{struct_engine_context}{Engine\+Context} does not own these systems. It only stores raw pointers that are managed and lifetime-\/controlled by \doxylink{class_jin_engine}{Jin\+Engine}.
+
+This structure is intentionally simple and copyable, and is commonly passed by const reference to avoid tight coupling between systems. 
+
+Definition at line \mbox{\hyperlink{_engine_context_8h_source_l00033}{33}} of file \mbox{\hyperlink{_engine_context_8h_source}{Engine\+Context.\+h}}.
+
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{struct_engine_context_a9f2c2e2e2f267e5a86ecb50124cca61e}\index{EngineContext@{EngineContext}!engine@{engine}}
+\index{engine@{engine}!EngineContext@{EngineContext}}
+\doxysubsubsection{\texorpdfstring{engine}{engine}}
+{\footnotesize\ttfamily \label{struct_engine_context_a9f2c2e2e2f267e5a86ecb50124cca61e} 
+\mbox{\hyperlink{class_jin_engine}{Jin\+Engine}}\texorpdfstring{$\ast$}{*} Engine\+Context\+::engine = nullptr}
+
+
+
+Pointer to the core \doxylink{class_jin_engine}{Jin\+Engine} instance. 
+
+This pointer allows subsystems to query engine-\/wide settings such as debug rendering flags or global execution state. 
+
+Definition at line \mbox{\hyperlink{_engine_context_8h_source_l00067}{67}} of file \mbox{\hyperlink{_engine_context_8h_source}{Engine\+Context.\+h}}.
+
+\Hypertarget{struct_engine_context_a9c8f61ef311c6f84a93d342eaaa1864a}\index{EngineContext@{EngineContext}!inputManager@{inputManager}}
+\index{inputManager@{inputManager}!EngineContext@{EngineContext}}
+\doxysubsubsection{\texorpdfstring{inputManager}{inputManager}}
+{\footnotesize\ttfamily \label{struct_engine_context_a9c8f61ef311c6f84a93d342eaaa1864a} 
+\mbox{\hyperlink{class_input_manager}{Input\+Manager}}\texorpdfstring{$\ast$}{*} Engine\+Context\+::input\+Manager = nullptr}
+
+
+
+Pointer to the \doxylink{class_input_manager}{Input\+Manager} handling keyboard and mouse input. 
+
+
+
+Definition at line \mbox{\hyperlink{_engine_context_8h_source_l00048}{48}} of file \mbox{\hyperlink{_engine_context_8h_source}{Engine\+Context.\+h}}.
+
+\Hypertarget{struct_engine_context_a8f4c861adc4684975fa767ae4723e095}\index{EngineContext@{EngineContext}!renderManager@{renderManager}}
+\index{renderManager@{renderManager}!EngineContext@{EngineContext}}
+\doxysubsubsection{\texorpdfstring{renderManager}{renderManager}}
+{\footnotesize\ttfamily \label{struct_engine_context_a8f4c861adc4684975fa767ae4723e095} 
+\mbox{\hyperlink{class_render_manager}{Render\+Manager}}\texorpdfstring{$\ast$}{*} Engine\+Context\+::render\+Manager = nullptr}
+
+
+
+Pointer to the \doxylink{class_render_manager}{Render\+Manager} responsible for rendering operations. 
+
+
+
+Definition at line \mbox{\hyperlink{_engine_context_8h_source_l00053}{53}} of file \mbox{\hyperlink{_engine_context_8h_source}{Engine\+Context.\+h}}.
+
+\Hypertarget{struct_engine_context_aa5985216cfd74ab389769abc5a5fdfb6}\index{EngineContext@{EngineContext}!soundManager@{soundManager}}
+\index{soundManager@{soundManager}!EngineContext@{EngineContext}}
+\doxysubsubsection{\texorpdfstring{soundManager}{soundManager}}
+{\footnotesize\ttfamily \label{struct_engine_context_aa5985216cfd74ab389769abc5a5fdfb6} 
+\mbox{\hyperlink{class_sound_manager}{Sound\+Manager}}\texorpdfstring{$\ast$}{*} Engine\+Context\+::sound\+Manager = nullptr}
+
+
+
+Pointer to the \doxylink{class_sound_manager}{Sound\+Manager} handling audio playback and control. 
+
+
+
+Definition at line \mbox{\hyperlink{_engine_context_8h_source_l00058}{58}} of file \mbox{\hyperlink{_engine_context_8h_source}{Engine\+Context.\+h}}.
+
+\Hypertarget{struct_engine_context_a67f96c1b09ab0393d4f8434900d7419a}\index{EngineContext@{EngineContext}!stateManager@{stateManager}}
+\index{stateManager@{stateManager}!EngineContext@{EngineContext}}
+\doxysubsubsection{\texorpdfstring{stateManager}{stateManager}}
+{\footnotesize\ttfamily \label{struct_engine_context_a67f96c1b09ab0393d4f8434900d7419a} 
+\mbox{\hyperlink{class_state_manager}{State\+Manager}}\texorpdfstring{$\ast$}{*} Engine\+Context\+::state\+Manager = nullptr}
+
+
+
+Pointer to the \doxylink{class_state_manager}{State\+Manager} responsible for game state transitions. 
+
+
+
+Definition at line \mbox{\hyperlink{_engine_context_8h_source_l00038}{38}} of file \mbox{\hyperlink{_engine_context_8h_source}{Engine\+Context.\+h}}.
+
+\Hypertarget{struct_engine_context_ab6fa006055c2a224931059f7ed840bed}\index{EngineContext@{EngineContext}!windowManager@{windowManager}}
+\index{windowManager@{windowManager}!EngineContext@{EngineContext}}
+\doxysubsubsection{\texorpdfstring{windowManager}{windowManager}}
+{\footnotesize\ttfamily \label{struct_engine_context_ab6fa006055c2a224931059f7ed840bed} 
+\mbox{\hyperlink{class_window_manager}{Window\+Manager}}\texorpdfstring{$\ast$}{*} Engine\+Context\+::window\+Manager = nullptr}
+
+
+
+Pointer to the \doxylink{class_window_manager}{Window\+Manager} handling window creation and events. 
+
+
+
+Definition at line \mbox{\hyperlink{_engine_context_8h_source_l00043}{43}} of file \mbox{\hyperlink{_engine_context_8h_source}{Engine\+Context.\+h}}.
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Project/\+Jin\+Engine/\+Public/\mbox{\hyperlink{_engine_context_8h}{Engine\+Context.\+h}}\end{DoxyCompactItemize}
