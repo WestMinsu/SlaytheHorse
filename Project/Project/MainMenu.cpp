@@ -13,6 +13,9 @@ void MainMenu::Init(const EngineContext& engineContext)
 {
 	JIN_LOG("[MainMenu] init called");
 
+	engineContext.soundManager->LoadSound("GameStartSFX", "TTS/GameStart.mp3", false);
+	engineContext.soundManager->LoadSound("GameExitSFX", "TTS/GameExit.mp3", false);
+
 	engineContext.renderManager->RegisterTexture("[Texture]Button", "Textures/test1.png");
 	engineContext.renderManager->RegisterMaterial("[Material]Button", "[EngineShader]default_texture", { {"u_Texture","[Texture]Button"} });
 	mainText = static_cast<TextObject*>(objectManager.AddObject(std::make_unique<TextObject>(engineContext.renderManager->GetFontByTag("[Font]default"), "Slay The Horse", TextAlignH::Center, TextAlignV::Middle)));
@@ -57,6 +60,17 @@ void MainMenu::Update(float dt, const EngineContext& engineContext)
 		}
 	}
 
+	if (isStarting)
+	{
+		startTimer += dt;
+
+		if (startTimer >= 1.f)
+		{
+			if (engineContext.stateManager != nullptr)
+				engineContext.stateManager->ChangeState(std::make_unique<BattleState>());
+		}
+	}
+
 	objectManager.UpdateAll(dt, engineContext);
 }
 
@@ -72,6 +86,9 @@ void MainMenu::Draw(const EngineContext& engineContext)
 void MainMenu::Free(const EngineContext& engineContext)
 {
 	JIN_LOG("[MainMenu] free update called");
+
+	engineContext.renderManager->UnregisterTexture("[Texture]Button", engineContext);
+	engineContext.renderManager->UnregisterMaterial("[Material]Button", engineContext);
 }
 
 void MainMenu::Unload(const EngineContext& engineContext)
@@ -83,8 +100,8 @@ void MainMenu::OnStartButtonClick(const EngineContext& context)
 {
 	JIN_LOG("Start Button Clicked! Transition to BattleState.");
 	context.soundManager->Play("GameStartSFX");
-	if (context.stateManager != nullptr)
-		context.stateManager->ChangeState(std::make_unique<BattleState>());
+	isStarting = true;
+	startTimer = 0.0f;
 }
 
 void MainMenu::OnExitButtonClick(const EngineContext& context)
