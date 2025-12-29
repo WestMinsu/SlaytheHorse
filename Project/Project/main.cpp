@@ -1,10 +1,15 @@
 #include <iostream>
 #include "Debug.h"
-#include "MainMenu.h"
 #include "Engine.h"
+#include "BattleState.h" 
+#include "GameState.h"
+#include "MainMenu.h"
+#include <windows.h>
 
 int main(int argc, char* argv[])
 {
+    SetConsoleOutputCP(65001);
+
     JinEngine jinEngine;
     DebugLogger::SetLogLevel(LogLevel::All);
     int width = 1280;
@@ -23,7 +28,8 @@ int main(int argc, char* argv[])
             return -1;
         }
     }
-    catch (const std::exception& e)
+
+    catch (const std::exception&)
     {
         JIN_ERR("Invalid arguments. Width and height must be integers.");
         return -1;
@@ -36,9 +42,13 @@ int main(int argc, char* argv[])
     }
     jinEngine.RenderDebugDraws(false);
 
-    jinEngine.GetEngineContext().renderManager->RegisterFont("[Font]default", "Fonts/NanumPenScript-Regular.ttf", 50);
+    auto& ctx = jinEngine.GetEngineContext();
 
-    jinEngine.GetEngineContext().stateManager->ChangeState(std::make_unique<MainMenu>());
+    ctx.renderManager->RegisterRenderLayer("[Layer]Background", 0);
+    ctx.renderManager->RegisterRenderLayer("[Layer]UIText", 12);
+    ctx.renderManager->RegisterFont("[Font]default", "Fonts/NanumPenScript-Regular.ttf", 50);
+    ctx.windowManager->SetBackgroundColor({ 0.2, 0.2, 0.4, 1 });
+    ctx.stateManager->ChangeState(std::make_unique<MainMenu>());
 
     jinEngine.GetEngineContext().soundManager->LoadSound("GameStartSFX", "TTS/GameStart.mp3", false);
     jinEngine.GetEngineContext().soundManager->LoadSound("GameExitSFX", "TTS/GameExit.mp3", false);
