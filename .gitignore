@@ -416,3 +416,11 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# FMOD libs
+!Project/SNAKE_Engine/ThirdParty/fmod/lib/x64/*.lib
+!Project/SNAKE_Engine/ThirdParty/fmod/lib/x64/*.dll
+!Project/SNAKE_Engine/ThirdParty/fmod/lib/x86/*.lib
+!Project/SNAKE_Engine/ThirdParty/fmod/lib/x86/*.dll
+!Project/SNAKE_Engine/ThirdParty/fmod/lib/arm64/*.lib
+!Project/SNAKE_Engine/ThirdParty/fmod/lib/arm64/*.dll
