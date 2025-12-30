@@ -30,6 +30,12 @@
     <ClInclude Include="InputField.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HangulAutomata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -42,18 +48,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BattleManager.cpp">
-	  <Filter>Source Files</Filter>
-	</ClCompile>
-	<ClCompile Include="MainMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Button.h">
-      <Filter>Header Files</Filter>
+    <ClCompile Include="MainMenu.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Button.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InputField.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HangulAutomata.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
