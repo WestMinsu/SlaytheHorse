@@ -51,4 +51,6 @@ private:
 
     void PrepareNextStageTransition(const EngineContext& context);
     std::string GenerateRandomSpacedText();
+
+    bool isSpawning = false;
 };

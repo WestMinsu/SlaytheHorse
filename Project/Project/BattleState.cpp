@@ -104,9 +104,11 @@ void BattleState::Update(float dt, const EngineContext& context)
 
             currentTurnTime = 2.5f;
             JIN_LOG(u8"실패! 다시 입력: " << nextStageTargetText);
+            return;
         }
     }
-    else if (currentState == TurnState::PlayerTurn)
+
+    if (currentState == TurnState::PlayerTurn)
     {
         if (turnNoticeText)
         {
@@ -238,17 +240,13 @@ void BattleState::OnProcessInput(const std::string& text, const EngineContext& c
             nextStageCard = nullptr;
             battleManager->SetupDeck(context);
             battleManager->DrawCard(context, 5);
-
             SpawnNextEnemy(context);
 
             maxTurnTime = 10.0f;
             currentTurnTime = maxTurnTime;
             currentState = TurnState::PlayerTurn;
 
-            if (inputField)
-            {
-                inputField->SetFocus(true);
-            }
+            return;
         }
         else
         {
