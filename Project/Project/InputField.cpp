@@ -198,7 +198,7 @@ void InputField::HandleTyping(const EngineContext& context)
 
         if (!finalStr.empty())
         {
-            if (onCommit) onCommit(finalStr);
+            if (onCommit) onCommit(finalStr, context);
         }
         return;
     }

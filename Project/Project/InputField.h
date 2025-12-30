@@ -8,7 +8,7 @@
 class InputField : public GameObject
 {
 public:
-	std::function<void(const std::string&)> onCommit;
+	std::function<void(const std::string&, const EngineContext&)> onCommit;
 
 	InputField(const glm::vec2& pos, const glm::vec2& size);
 

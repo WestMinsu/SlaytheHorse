@@ -2,6 +2,7 @@
 #include "Card.h"
 #include "InputManager.h"
 #include "Enemy.h"
+#include "MainMenu.h"
 
 void BattleState::Init(const EngineContext& engineContext)
 {
@@ -13,6 +14,10 @@ void BattleState::Init(const EngineContext& engineContext)
 
     engineContext.renderManager->RegisterTexture("[Texture]Enemy", "Textures/Horse.png");
     engineContext.renderManager->RegisterMaterial("[Material]Enemy", "[EngineShader]default_texture", { {"u_Texture","[Texture]Enemy"} });
+
+    engineContext.soundManager->LoadSound("HealSFX", "TTS/Heal.mp3", false);
+    engineContext.soundManager->LoadSound("HitSFX", "TTS/Hit.mp3", false);
+    engineContext.soundManager->LoadSound("DeathSFX", "TTS/Death.mp3", false);
 
     battleManager.SetupDeck(engineContext);
 
@@ -26,11 +31,11 @@ void BattleState::Init(const EngineContext& engineContext)
     auto inputFieldObj = objectManager.AddObject(std::make_unique<InputField>(glm::vec2(0, 250.f), glm::vec2(300.0f, 150.0f)), "[Object]InputField");
     inputField = static_cast<InputField*>(inputFieldObj);
 
-    inputField->onCommit = [this](const std::string& text)
-    {
-        this->OnProcessInput(text);
-    };
-
+    inputField->onCommit = [this](const std::string& text, const EngineContext& context)
+        {
+            this->OnProcessInput(text, context);
+        };
+     
     battleManager.DrawCard(5);
 
     auto font = engineContext.renderManager->GetFontByTag("[Font]default");
@@ -135,7 +140,27 @@ void BattleState::Free(const EngineContext& engineContext)
     engineContext.renderManager->UnregisterMaterial("[Material]Button", engineContext);
 }
 
-void BattleState::OnProcessInput(const std::string& text)
+void BattleState::ReturnToMainMenu(const EngineContext& context)
 {
-    const auto& hand = battleManager.GetHand();
+    if (context.stateManager != nullptr)
+        context.stateManager->ChangeState(std::make_unique<MainMenu>());
+}
+
+void BattleState::OnProcessInput(const std::string& text, const EngineContext& context)
+{
+    JIN_LOG("Player typed: " << text);
+
+    for (const auto& card : battleManager.GetHand())
+    {
+        if (card->GetCardName() == text)
+        {
+            JIN_LOG("Commit Success: " << text);
+
+            //card use
+
+            return;
+        }
+    }
+
+    player->ModifyHealth(-1, context);
 }

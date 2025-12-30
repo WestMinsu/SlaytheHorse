@@ -18,13 +18,12 @@ public:
     void Init(const EngineContext& engineContext) override;
     void Update(float dt, const EngineContext& engineContext) override;
     void Free(const EngineContext& engineContext) override;
-
+    void ReturnToMainMenu(const EngineContext& context);
+    InputField* inputField = nullptr;
 private:
     BattleManager battleManager;
 
-    void OnProcessInput(const std::string& text);
-
-    InputField* inputField = nullptr;
+    void OnProcessInput(const std::string& text, const EngineContext& context);
 
     Player* player = nullptr;
 
