@@ -47,6 +47,8 @@ int main(int argc, char* argv[])
     ctx.renderManager->RegisterRenderLayer("[Layer]Background", 0);
     ctx.renderManager->RegisterRenderLayer("[Layer]UIText", 12);
     ctx.renderManager->RegisterFont("[Font]default", "Fonts/NanumPenScript-Regular.ttf", 50);
+    ctx.renderManager->RegisterTexture("[Texture]CardEmpty", "Textures/card_back.png"); // 카드 배경 이미지
+    ctx.renderManager->RegisterMaterial("[Material]Card", "[EngineShader]default_texture", { {"u_Texture","[Texture]CardEmpty"} });
     ctx.windowManager->SetBackgroundColor({ 0.2, 0.2, 0.4, 1 });
     ctx.stateManager->ChangeState(std::make_unique<MainMenu>());
 

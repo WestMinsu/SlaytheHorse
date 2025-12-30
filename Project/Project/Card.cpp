@@ -12,22 +12,85 @@ Card::Card() : GameObject()
 
 void Card::Init(const EngineContext& engineContext)
 {
-    Font* font = engineContext.renderManager->GetFontByTag("[Font]default");
+    SetMesh(engineContext, "[EngineMesh]default");
+    SetMaterial(engineContext, "[Material]Card");
 
-    if (font == nullptr)
-        return;
+    originalScale = { 150.0f, 210.0f };
+    hoverScale = originalScale * hoverMultiplier; 
 
-    auto textObj = std::make_unique<TextObject>(font, cardName);
-    textDisplay = textObj.get();
+    GetTransform2D().SetScale(originalScale);
+    originalDepth = GetTransform2D().GetDepth();
+    basePosition = GetTransform2D().GetPosition(); 
 
-    textDisplay->SetRenderLayer("[Layer]UIText");
+    hoverUpOffset = (hoverScale.y - originalScale.y) / 2.0f;
 
-    if (engineContext.stateManager->GetCurrentState() != nullptr)
-        engineContext.stateManager->GetCurrentState()->GetObjectManager().AddObject(std::move(textObj));
+    auto font = engineContext.renderManager->GetFontByTag("[Font]default");
+    if (font)
+    {
+        auto textObj = std::make_unique<TextObject>(font, cardName, TextAlignH::Center, TextAlignV::Middle);
+        textDisplay = textObj.get();
+        textDisplay->SetRenderLayer("[Layer]UIText");
+        textDisplay->GetTransform2D().SetDepth(originalDepth - 0.1f);
+        originalTextScale = textDisplay->GetTransform2D().GetScale();
+
+        if (engineContext.stateManager->GetCurrentState())
+            engineContext.stateManager->GetCurrentState()->GetObjectManager().AddObject(std::move(textObj));
+    }
 }
 
-void Card::Update(float deltaTime, const EngineContext& engineContext)
+void Card::Update(float dt, const EngineContext& engineContext)
 {
+    if (textDisplay)
+        textDisplay->GetTransform2D().SetPosition(GetTransform2D().GetPosition());
+}
+
+void Card::SetBasePosition(const glm::vec2& pos)
+{
+    basePosition = pos;
+    if (!isHovered)
+        GetTransform2D().SetPosition(basePosition);
+}
+
+void Card::SetHoverState(bool hover)
+{
+    if (isHovered == hover) return;
+
+    isHovered = hover;
+    if (isHovered)
+    {
+        GetTransform2D().SetScale(hoverScale);
+        GetTransform2D().SetDepth(originalDepth - 1.0f);
+        GetTransform2D().SetPosition(basePosition + glm::vec2(0.0f, hoverUpOffset));
+        if (textDisplay)
+        {
+            textDisplay->GetTransform2D().SetScale(originalTextScale * hoverMultiplier);
+            textDisplay->GetTransform2D().SetDepth(originalDepth - 1.1f);
+        }
+    }
+    else
+    {
+        GetTransform2D().SetScale(originalScale);
+        GetTransform2D().SetDepth(originalDepth);
+        GetTransform2D().SetPosition(basePosition);
+
+        if (textDisplay)
+        {
+            textDisplay->GetTransform2D().SetScale(originalTextScale);
+            textDisplay->GetTransform2D().SetDepth(originalDepth - 0.1f);
+        }
+    }
+}
+glm::vec4 Card::GetBoundingBox() const
+{
+    glm::vec2 pos = GetWorldPosition();
+    glm::vec2 scale = GetWorldScale();
+
+    return glm::vec4(
+        pos.x - scale.x / 2.0f,
+        pos.x + scale.x / 2.0f,
+        pos.y - scale.y / 2.0f,
+        pos.y + scale.y / 2.0f
+    );
 }
 
 void Card::SetCardName(const std::string& name)

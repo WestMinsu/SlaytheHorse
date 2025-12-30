@@ -1,5 +1,6 @@
 #include "BattleState.h"
 #include "Card.h"
+#include "InputManager.h"
 
 void BattleState::Init(const EngineContext& engineContext)
 {
@@ -7,7 +8,6 @@ void BattleState::Init(const EngineContext& engineContext)
     engineContext.renderManager->RegisterMaterial("[Material]Button", "[EngineShader]default_texture", { {"u_Texture","[Texture]Button"} });
 
     battleManager.SetupDeck(engineContext);
-    battleManager.DrawCard(3);
 
     auto inputFieldObj = objectManager.AddObject(std::make_unique<InputField>(glm::vec2(0, 250.f), glm::vec2(300.0f, 150.0f)), "[Object]InputField");
     inputField = static_cast<InputField*>(inputFieldObj);
@@ -16,16 +16,34 @@ void BattleState::Init(const EngineContext& engineContext)
         {
             this->OnProcessInput(text);
         };
+
+    battleManager.DrawCard(5);
+
 }
 
 void BattleState::Update(float dt, const EngineContext& engineContext)
 {
     GameState::Update(dt, engineContext);
 
-    const auto& hand = battleManager.GetHand();
-    for (size_t i = 0; i < hand.size(); ++i)
+    const auto& currentHand = battleManager.GetHand();
+    float spacing = 170.0f;
+    float totalWidth = (currentHand.size() - 1) * spacing;
+    float startX = -totalWidth / 2.0f;
+
+    Camera2D* activeCam = GetActiveCamera();
+    glm::vec2 mousePos = engineContext.inputManager->GetMouseWorldPos(activeCam);
+
+    for (size_t i = 0; i < currentHand.size(); ++i)
     {
-        hand[i]->GetTransform2D().SetPosition({ -300.0f + (i * 200.0f), -200.0f });
+        Card* card = currentHand[i];        
+        float posX = startX + (i * spacing);
+        card->SetBasePosition({ posX, -250.0f });
+
+        glm::vec4 bounds = card->GetBoundingBox();
+        bool isMouseOver = (mousePos.x >= bounds.x && mousePos.x <= bounds.y &&
+            mousePos.y >= bounds.z && mousePos.y <= bounds.w);
+
+        card->SetHoverState(isMouseOver);
     }
 }
 
