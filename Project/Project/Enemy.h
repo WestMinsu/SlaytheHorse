@@ -30,4 +30,6 @@ private:
     bool isBoss = false;
     TextObject* nameDisplay = nullptr;
     float totalTime = 0.0f;
+    TextObject* attackDisplay = nullptr; 
+    float attackDisplayTimer = 0.0f;
 };
