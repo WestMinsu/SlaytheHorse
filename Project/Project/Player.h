@@ -13,11 +13,11 @@ public:
 
 	void ModifyHealth(int amount, const EngineContext& context);
 
-	int GetCurrHP();
+	void ModifyPower(int amount, const EngineContext& context);
 
-	int GetPower();
+	int power = 0;
 
-	int drawCardCnt = 20;
+	int drawCardCnt = 5;
 
 	int maxHandCount = 7;
 private:
@@ -26,11 +26,10 @@ private:
 
 	GameObject* hpBar = nullptr;
 	TextObject* hpBarText = nullptr;
+	TextObject* powerText = nullptr;
 
 	int maxHP = 20;
 	int currHP = 20;
-
-	int power = 0;
 
 	bool isDead = false;
 	float outTimer = 0.f;

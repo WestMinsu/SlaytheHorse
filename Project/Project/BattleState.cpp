@@ -18,6 +18,18 @@ void BattleState::Init(const EngineContext& engineContext)
     engineContext.renderManager->RegisterTexture("[Texture]Enemy", "Textures/Horse.png");
     engineContext.renderManager->RegisterMaterial("[Material]Enemy", "[EngineShader]default_texture", { {"u_Texture","[Texture]Enemy"} });
 
+    engineContext.soundManager->LoadSound("Card1SFX", "TTS/Card1.mp3", false);
+    engineContext.soundManager->LoadSound("Card2SFX", "TTS/Card2.mp3", false);
+    engineContext.soundManager->LoadSound("Card3SFX", "TTS/Card3.mp3", false);
+    engineContext.soundManager->LoadSound("Card4SFX", "TTS/Card4.mp3", false);
+    engineContext.soundManager->LoadSound("Card5SFX", "TTS/Card5.mp3", false);
+    engineContext.soundManager->LoadSound("Card6SFX", "TTS/Card6.mp3", false);
+    engineContext.soundManager->LoadSound("Card7SFX", "TTS/Card7.mp3", false);
+    engineContext.soundManager->LoadSound("Card8SFX", "TTS/Card8.mp3", false);
+    engineContext.soundManager->LoadSound("Card9SFX", "TTS/Card9.mp3", false);
+    engineContext.soundManager->LoadSound("Card10SFX", "TTS/Card10.mp3", false);
+
+
     engineContext.soundManager->LoadSound("HealSFX", "TTS/Heal.mp3", false);
     engineContext.soundManager->LoadSound("HitSFX", "TTS/Hit.mp3", false);
     engineContext.soundManager->LoadSound("DeathSFX", "TTS/Death.mp3", false);
@@ -362,6 +374,11 @@ void BattleState::PrepareNextStageTransition(const EngineContext& context)
         inputField->SetInteractable(true);
         inputField->SetFocus(true);
     }
+}
+
+void BattleState::ModifyCurrentTurnTime(int amount)
+{
+    currentTurnTime += amount;
 }
 
 std::string BattleState::GenerateRandomSpacedText()

@@ -26,6 +26,8 @@ public:
     Player* player = nullptr;
 
     BattleManager* battleManager = nullptr;;
+
+    void ModifyCurrentTurnTime(int amount);
 private:
     void OnProcessInput(const std::string& text, const EngineContext& context);
 
