@@ -1,6 +1,7 @@
 #include "BattleState.h"
 #include "Card.h"
 #include "InputManager.h"
+#include "Player.h"
 #include "Enemy.h"
 #include "MainMenu.h"
 
@@ -24,9 +25,13 @@ void BattleState::Init(const EngineContext& engineContext)
     auto playerObj = objectManager.AddObject(std::make_unique<Player>(glm::vec2(-300.f, 0.f), glm::vec2(128.f, 128.f)), "[Object]Player");
     player = static_cast<Player*>(playerObj);
 
-    auto enemyObj = objectManager.AddObject(std::make_unique<Enemy>(glm::vec2(300.f, 0.f), glm::vec2(128.f, 128.f)), "[Object]Enemy");
-    enemy = static_cast<Enemy*>(enemyObj);
-    enemy->SetMaterial(engineContext, "[Material]Player");
+    auto normalEnemy = std::make_unique<Enemy>(u8"빠른 말", glm::vec2(300.f, 0.f), EnemyType::Fast);
+    objectManager.AddObject(std::move(normalEnemy), "[Object]Enemy");
+
+    /* // 예시 2: 보스 소환 시 (나중에 조건부로 호출)
+    auto bossEnemy = std::make_unique<Enemy>(glm::vec2(300.f, 0.f), glm::vec2(256.f, 256.f));
+    objectManager.AddObject(std::move(bossEnemy));
+    */
 
     auto inputFieldObj = objectManager.AddObject(std::make_unique<InputField>(glm::vec2(0, 250.f), glm::vec2(300.0f, 150.0f)), "[Object]InputField");
     inputField = static_cast<InputField*>(inputFieldObj);
@@ -63,14 +68,18 @@ void BattleState::Update(float dt, const EngineContext& engineContext)
 
     if (currentState == TurnState::PlayerTurn)
     {
-        currentTurnTime -= dt;
+        if (currentTurnTime > 0.0f)
+            currentTurnTime -= dt;
+
         if (currentTurnTime <= 0.0f)
         {
             currentTurnTime = 0.0f;
-            inputField->SetInteractable(false);
+            if (inputField)
+                inputField->SetInteractable(false);
+
             currentState = TurnState::EnemyTurn;
-            transitionTimer = 1.5f; // 적이 1.5초 동안 '생각'하는 느낌
-            JIN_LOG("Enemy Turn Start!");
+            transitionTimer = 1.5f;
+            JIN_LOG(u8"적의 턴 시작!");
         }
     }
     else if (currentState == TurnState::EnemyTurn)
@@ -78,17 +87,24 @@ void BattleState::Update(float dt, const EngineContext& engineContext)
         transitionTimer -= dt;
         if (transitionTimer <= 0.0f)
         {
-            // 여기서 나중에 enemy->Attack(player) 같은 함수를 호출하면 됩니다.
-            JIN_LOG("Enemy Attacked!"); 
-            
-            // 다시 플레이어 턴으로 복구
-            currentState = TurnState::PlayerTurn;
             currentTurnTime = maxTurnTime;
-            inputField->SetInteractable(true);
-            inputField->SetFocus(true); // 입력창으로 포커스 자동 이동
-            
-            // 카드 보충 등 다음 턴 준비
-            battleManager.DrawCard(1); 
+
+            std::vector<Object*> enemyObjects;
+            objectManager.FindByTag("[Object]Enemy", enemyObjects);
+
+            if (!enemyObjects.empty())
+            {
+                Enemy* currentEnemy = static_cast<Enemy*>(enemyObjects[0]);
+                currentEnemy->Attack(player, currentTurnTime, engineContext);
+            }
+
+            currentState = TurnState::PlayerTurn;
+            if (inputField)
+            {
+                inputField->SetInteractable(true);
+                inputField->SetFocus(true);
+            }
+            battleManager.DrawCard(1);
         }
     }
 
