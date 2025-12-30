@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "MainMenu.h"
+#include "FloatingText.h"
 
 void BattleState::Init(const EngineContext& engineContext)
 {
@@ -191,6 +192,12 @@ void BattleState::OnProcessInput(const std::string& text, const EngineContext& c
 {
     JIN_LOG("Player typed: " << text);
 
+    // 1. 폰트 가져오기 (기존에 로드된 폰트 태그 사용)
+    Font* font = context.renderManager->GetFontByTag("[Font]default");
+
+    // 2. 텍스트가 나타날 위치 설정 (화면 중앙: 0,0 / 필요에 따라 수정)
+    glm::vec2 spawnPos = { 0.0f, 50.0f };
+
     for (const auto& card : battleManager->GetHand())
     {
         if (card->GetCardName() == text)
@@ -199,9 +206,30 @@ void BattleState::OnProcessInput(const std::string& text, const EngineContext& c
 
             card->UseCard(context);
 
+            // [성공 텍스트 생성] 초록색 (R:0.2, G:1.0, B:0.2)
+            if (font)
+            {
+                std::string msg = u8"사용 성공!\n" + card->GetCardName();
+                auto floatText = std::make_unique<FloatingText>(
+                    font, msg, spawnPos, glm::vec4(0.2f, 1.0f, 0.2f, 1.0f)
+                );
+                // GameState가 가지고 있는 ObjectManager에 등록
+                GetObjectManager().AddObject(std::move(floatText));
+            }
+
             return;
         }
     }
 
     player->ModifyHealth(-1, context);
+
+    // [실패 텍스트 생성] 빨간색 (R:1.0, G:0.2, B:0.2)
+    if (font)
+    {
+        std::string msg = u8"사용 실패!";
+        auto floatText = std::make_unique<FloatingText>(
+            font, msg, spawnPos, glm::vec4(1.0f, 0.2f, 0.2f, 1.0f)
+        );
+        GetObjectManager().AddObject(std::move(floatText));
+    }
 }

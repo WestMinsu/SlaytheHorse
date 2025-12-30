@@ -238,6 +238,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="FloatingText.h" />
     <ClInclude Include="HangulAutomata.h" />
     <ClInclude Include="InputField.h" />
     <ClInclude Include="BattleManager.h" />
