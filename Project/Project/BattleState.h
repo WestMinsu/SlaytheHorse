@@ -21,8 +21,6 @@ public:
     void Free(const EngineContext& engineContext) override;
     void ReturnToMainMenu(const EngineContext& context);
 
-    void ModifyCurrentTurnTime(int amount);
-
     InputField* inputField = nullptr;
 
     Player* player = nullptr;
