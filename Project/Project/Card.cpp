@@ -162,7 +162,7 @@ void Card::UseCard(const EngineContext& engineContext)
         if (!enemies.empty())
         {
             Enemy* target = static_cast<Enemy*>(enemies[0]);
-            target->ModifyHealth(-2, engineContext);
+            target->ModifyHealth(-2 - (BS->player->power), engineContext);
         }
     }
     else if (this->cardName == u8"말차 한 잔")
@@ -180,7 +180,7 @@ void Card::UseCard(const EngineContext& engineContext)
         if (!enemies.empty())
         {
             Enemy* target = static_cast<Enemy*>(enemies[0]);
-            target->ModifyHealth(-4, engineContext);
+            target->ModifyHealth(-4 - (BS->player->power), engineContext);
         }
     }
     else if (this->cardName == u8"양말")
@@ -213,7 +213,7 @@ void Card::UseCard(const EngineContext& engineContext)
         if (!enemies.empty())
         {
             Enemy* target = static_cast<Enemy*>(enemies[0]);
-            target->ModifyHealth(-6, engineContext);
+            target->ModifyHealth(-6 - (BS->player->power), engineContext);
         }
     }
     else if (this->cardName == u8"슬 레이 더 홀  스")
@@ -231,7 +231,7 @@ void Card::UseCard(const EngineContext& engineContext)
         if (!enemies.empty())
         {
             Enemy* target = static_cast<Enemy*>(enemies[0]);
-            target->ModifyHealth(-10, engineContext);
+            target->ModifyHealth(-10 - (BS->player->power), engineContext);
         }
     }
     else if (this->cardName == u8"맘마미아")
