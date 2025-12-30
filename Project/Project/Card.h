@@ -27,6 +27,8 @@ public:
 
     void UseCard(const EngineContext& engineContext);
 
+    void KillAll();
+
 private:
     std::string cardName;
     std::string cardDescription;

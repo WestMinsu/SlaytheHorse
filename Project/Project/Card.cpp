@@ -160,6 +160,11 @@ void Card::UseCard(const EngineContext& engineContext)
 
     BS->battleManager->RemoveCard(this);
 
+    this->KillAll();
+}
+
+void Card::KillAll()
+{
     textDisplay->Kill();
     descriptionDisplay->Kill();
     separatorLine->Kill();
