@@ -14,6 +14,8 @@ public:
 	void ModifyHealth(int amount, const EngineContext& context);
 
 	int GetCurrHP();
+
+	int drawCardCnt = 5;
 private:
 	glm::vec2 initSize;
 	glm::vec2 initPos;

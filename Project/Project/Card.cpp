@@ -30,14 +30,8 @@ void Card::Init(const EngineContext& engineContext)
     auto font = engineContext.renderManager->GetFontByTag("[Font]default");
     if (font)
     {
-        auto textObj = std::make_unique<TextObject>(font, cardName, TextAlignH::Center, TextAlignV::Middle);
-        textDisplay = textObj.get();
-        textDisplay->SetRenderLayer("[Layer]UIText");
-        textDisplay->GetTransform2D().SetDepth(originalDepth + 0.1f);
-        originalTextScale = textDisplay->GetTransform2D().GetScale();
-
         auto currentState = engineContext.stateManager->GetCurrentState();
-        if (!currentState) 
+        if (!currentState)
             return;
 
         auto nameObj = std::make_unique<TextObject>(font, cardName, TextAlignH::Center, TextAlignV::Middle);
@@ -45,17 +39,16 @@ void Card::Init(const EngineContext& engineContext)
         textDisplay->SetRenderLayer("[Layer]UIText");
         textDisplay->GetTransform2D().SetDepth(originalDepth + 0.2f);
         textDisplay->GetTransform2D().SetScale(textDisplay->GetTransform2D().GetScale() * 0.7f);
-        originalNameScale = textDisplay->GetTransform2D().GetScale(); 
+        originalNameScale = textDisplay->GetTransform2D().GetScale();
         currentState->GetObjectManager().AddObject(std::move(nameObj));
 
         auto lineObj = std::make_unique<GameObject>();
         separatorLine = lineObj.get();
-        separatorLine->SetMesh(engineContext, "[EngineMesh]default"); 
+        separatorLine->SetMesh(engineContext, "[EngineMesh]default");
         separatorLine->SetMaterial(engineContext, "[Material]Button");
         separatorLine->SetRenderLayer("[Layer]UIText");
         separatorLine->GetTransform2D().SetScale({ 110.0f, 1.5f });
-        originalLineScale = separatorLine->GetTransform2D().GetScale(); 
-
+        originalLineScale = separatorLine->GetTransform2D().GetScale();
         separatorLine->GetTransform2D().SetDepth(originalDepth + 0.1f);
         currentState->GetObjectManager().AddObject(std::move(lineObj));
 
@@ -63,12 +56,12 @@ void Card::Init(const EngineContext& engineContext)
         descriptionDisplay = descObj.get();
         descriptionDisplay->SetRenderLayer("[Layer]UIText");
         descriptionDisplay->GetTransform2D().SetDepth(originalDepth + 0.2f);
-
         descriptionDisplay->GetTransform2D().SetScale(originalNameScale * 0.7f);
         originalDescScale = descriptionDisplay->GetTransform2D().GetScale();
-
         currentState->GetObjectManager().AddObject(std::move(descObj));
     }
+
+    SetVisibilityAll(IsVisible());
 }
 
 void Card::Update(float dt, const EngineContext& engineContext)
@@ -158,9 +151,7 @@ void Card::UseCard(const EngineContext& engineContext)
 
     BattleState* BS = static_cast<BattleState*>(engineContext.stateManager->GetCurrentState());
 
-    BS->battleManager->RemoveCard(this);
-
-    this->KillAll();
+    BS->battleManager->DiscardCard(this);
 }
 
 void Card::KillAll()
@@ -169,6 +160,20 @@ void Card::KillAll()
     descriptionDisplay->Kill();
     separatorLine->Kill();
     this->Kill();
+}
+
+void Card::SetVisibilityAll(bool _isVisible)
+{
+    if (textDisplay)
+        textDisplay->SetVisibility(_isVisible);
+
+    if (descriptionDisplay)
+        descriptionDisplay->SetVisibility(_isVisible);
+
+    if (separatorLine)
+        separatorLine->SetVisibility(_isVisible);
+
+    this->SetVisibility(_isVisible);
 }
 
 void Card::SetCardName(const std::string& name)

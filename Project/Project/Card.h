@@ -29,6 +29,8 @@ public:
 
     void KillAll();
 
+    void SetVisibilityAll(bool _isVisible);
+
 private:
     std::string cardName;
     std::string cardDescription;

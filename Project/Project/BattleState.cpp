@@ -43,7 +43,7 @@ void BattleState::Init(const EngineContext& engineContext)
             this->OnProcessInput(text, context);
         };
 
-    battleManager->DrawCard(5);
+    battleManager->DrawCard(player->drawCardCnt);
 
     auto font = engineContext.renderManager->GetFontByTag("[Font]default");
     auto timerTextObj = std::make_unique<TextObject>(font, "Time: 10.0", TextAlignH::Center, TextAlignV::Middle);
@@ -79,6 +79,8 @@ void BattleState::Update(float dt, const EngineContext& engineContext)
             if (inputField)
                 inputField->SetInteractable(false);
 
+            battleManager->DiscardAllCardFromHand();
+
             currentState = TurnState::EnemyTurn;
             transitionTimer = 1.5f;
             JIN_LOG(u8"적의 턴 시작!");
@@ -106,7 +108,7 @@ void BattleState::Update(float dt, const EngineContext& engineContext)
                 inputField->SetInteractable(true);
                 inputField->SetFocus(true);
             }
-            battleManager->DrawCard(1);
+            battleManager->DrawCard(player->drawCardCnt);
         }
     }
 
