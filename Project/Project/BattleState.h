@@ -2,6 +2,7 @@
 #include "GameState.h"
 #include "BattleManager.h"
 #include "InputField.h"
+#include "Player.h"
 
 class BattleState : public GameState
 {
@@ -16,4 +17,6 @@ private:
     void OnProcessInput(const std::string& text);
 
     InputField* inputField = nullptr;
+
+    Player* player = nullptr;
 };

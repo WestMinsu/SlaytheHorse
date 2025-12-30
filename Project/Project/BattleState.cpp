@@ -7,7 +7,13 @@ void BattleState::Init(const EngineContext& engineContext)
     engineContext.renderManager->RegisterTexture("[Texture]Button", "Textures/test1.png");
     engineContext.renderManager->RegisterMaterial("[Material]Button", "[EngineShader]default_texture", { {"u_Texture","[Texture]Button"} });
 
+    engineContext.renderManager->RegisterTexture("[Texture]Player", "Textures/Horse.png");
+    engineContext.renderManager->RegisterMaterial("[Material]Player", "[EngineShader]default_texture", { {"u_Texture","[Texture]Player"} });
+
     battleManager.SetupDeck(engineContext);
+
+    auto playerObj = objectManager.AddObject(std::make_unique<Player>(glm::vec2(-300.f, 0.f), glm::vec2(128.f, 128.f)), "[Object]Player");
+    player = static_cast<Player*>(playerObj);
 
     auto inputFieldObj = objectManager.AddObject(std::make_unique<InputField>(glm::vec2(0, 250.f), glm::vec2(300.0f, 150.0f)), "[Object]InputField");
     inputField = static_cast<InputField*>(inputFieldObj);

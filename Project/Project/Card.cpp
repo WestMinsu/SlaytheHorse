@@ -22,6 +22,8 @@ void Card::Init(const EngineContext& engineContext)
     originalDepth = GetTransform2D().GetDepth();
     basePosition = GetTransform2D().GetPosition(); 
 
+    SetRenderLayer("[Layer]UIText");
+
     hoverUpOffset = (hoverScale.y - originalScale.y) / 2.0f;
 
     auto font = engineContext.renderManager->GetFontByTag("[Font]default");
@@ -30,7 +32,7 @@ void Card::Init(const EngineContext& engineContext)
         auto textObj = std::make_unique<TextObject>(font, cardName, TextAlignH::Center, TextAlignV::Middle);
         textDisplay = textObj.get();
         textDisplay->SetRenderLayer("[Layer]UIText");
-        textDisplay->GetTransform2D().SetDepth(originalDepth - 0.1f);
+        textDisplay->GetTransform2D().SetDepth(originalDepth + 0.1f);
         originalTextScale = textDisplay->GetTransform2D().GetScale();
 
         if (engineContext.stateManager->GetCurrentState())

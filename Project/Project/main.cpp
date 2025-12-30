@@ -45,6 +45,7 @@ int main(int argc, char* argv[])
     auto& ctx = jinEngine.GetEngineContext();
 
     ctx.renderManager->RegisterRenderLayer("[Layer]Background", 0);
+    ctx.renderManager->RegisterRenderLayer("[Layer]Player", 1);
     ctx.renderManager->RegisterRenderLayer("[Layer]UIText", 12);
     ctx.renderManager->RegisterFont("[Font]default", "Fonts/NanumPenScript-Regular.ttf", 50);
     ctx.renderManager->RegisterTexture("[Texture]CardEmpty", "Textures/card_back.png"); // 카드 배경 이미지
