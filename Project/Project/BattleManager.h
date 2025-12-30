@@ -23,6 +23,7 @@ public:
         return hand;
     }
 
+    void RemoveCard(Card* usedCard);
 private:
     Card* CreateCard(const EngineContext& context, const CardData& data);
 

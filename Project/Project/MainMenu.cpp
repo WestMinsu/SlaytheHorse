@@ -87,6 +87,7 @@ void MainMenu::Draw(const EngineContext& engineContext)
 void MainMenu::Free(const EngineContext& engineContext)
 {
 	JIN_LOG("[MainMenu] free update called");
+	objectManager.FreeAll(engineContext);
 
 	engineContext.renderManager->UnregisterTexture("[Texture]Button", engineContext);
 	engineContext.renderManager->UnregisterMaterial("[Material]Button", engineContext);

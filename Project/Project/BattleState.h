@@ -23,9 +23,9 @@ public:
     InputField* inputField = nullptr;
 
     Player* player = nullptr;
-private:
-    BattleManager battleManager;
 
+    BattleManager* battleManager = nullptr;;
+private:
     void OnProcessInput(const std::string& text, const EngineContext& context);
 
     TextObject* timerText = nullptr;

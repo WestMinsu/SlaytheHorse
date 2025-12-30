@@ -5,6 +5,8 @@
 #include "RenderManager.h"
 #include "StateManager.h"
 #include <iostream>
+#include "BattleState.h"
+#include "Debug.h"
 
 Card::Card() : GameObject()
 {
@@ -148,6 +150,20 @@ glm::vec4 Card::GetBoundingBox() const
         pos.y - scale.y / 2.0f,
         pos.y + scale.y / 2.0f
     );
+}
+
+void Card::UseCard(const EngineContext& engineContext)
+{
+    JIN_LOG("Using Card: " << this->cardName);
+
+    BattleState* BS = static_cast<BattleState*>(engineContext.stateManager->GetCurrentState());
+
+    BS->battleManager->RemoveCard(this);
+
+    textDisplay->Kill();
+    descriptionDisplay->Kill();
+    separatorLine->Kill();
+    this->Kill();
 }
 
 void Card::SetCardName(const std::string& name)

@@ -25,6 +25,8 @@ public:
     void SetBasePosition(const glm::vec2& pos);
     glm::vec4 GetBoundingBox() const;
 
+    void UseCard(const EngineContext& engineContext);
+
 private:
     std::string cardName;
     std::string cardDescription;
