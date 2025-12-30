@@ -11,11 +11,12 @@ public:
     void Update(float dt, const EngineContext& engineContext) override;
     void Free(const EngineContext& engineContext) override;
     void ReturnToMainMenu(const EngineContext& context);
+
     InputField* inputField = nullptr;
+
+    Player* player = nullptr;
 private:
     BattleManager battleManager;
 
     void OnProcessInput(const std::string& text, const EngineContext& context);
-
-    Player* player = nullptr;
 };
