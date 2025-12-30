@@ -15,7 +15,9 @@ void BattleState::Init(const EngineContext& engineContext)
     engineContext.soundManager->LoadSound("HitSFX", "TTS/Hit.mp3", false);
     engineContext.soundManager->LoadSound("DeathSFX", "TTS/Death.mp3", false);
 
-    battleManager.SetupDeck(engineContext);
+    battleManager = new BattleManager();
+
+    battleManager->SetupDeck(engineContext);
 
     auto playerObj = objectManager.AddObject(std::make_unique<Player>(glm::vec2(-300.f, 0.f), glm::vec2(128.f, 128.f)), "[Object]Player");
     player = static_cast<Player*>(playerObj);
@@ -28,7 +30,7 @@ void BattleState::Init(const EngineContext& engineContext)
             this->OnProcessInput(text, context);
         };
 
-    battleManager.DrawCard(5);
+    battleManager->DrawCard(5);
 
 }
 
@@ -36,7 +38,7 @@ void BattleState::Update(float dt, const EngineContext& engineContext)
 {
     GameState::Update(dt, engineContext);
 
-    const auto& currentHand = battleManager.GetHand();
+    const auto& currentHand = battleManager->GetHand();
     float spacing = 170.0f;
     float totalWidth = (currentHand.size() - 1) * spacing;
     float startX = -totalWidth / 2.0f;
@@ -60,8 +62,16 @@ void BattleState::Update(float dt, const EngineContext& engineContext)
 
 void BattleState::Free(const EngineContext& engineContext)
 {
+    objectManager.FreeAll(engineContext);
+
     engineContext.renderManager->UnregisterTexture("[Texture]Button", engineContext);
     engineContext.renderManager->UnregisterMaterial("[Material]Button", engineContext);
+
+    /*if (battleManager != nullptr)
+    {
+        delete battleManager;
+        battleManager = nullptr;
+    }*/
 }
 
 void BattleState::ReturnToMainMenu(const EngineContext& context)
@@ -74,13 +84,13 @@ void BattleState::OnProcessInput(const std::string& text, const EngineContext& c
 {
     JIN_LOG("Player typed: " << text);
 
-    for (const auto& card : battleManager.GetHand())
+    for (const auto& card : battleManager->GetHand())
     {
         if (card->GetCardName() == text)
         {
             JIN_LOG("Commit Success: " << text);
 
-            //card use
+            card->UseCard(context);
 
             return;
         }

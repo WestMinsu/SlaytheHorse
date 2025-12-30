@@ -56,6 +56,11 @@ void BattleManager::SetupDeck(const EngineContext& context)
     std::shuffle(deck.begin(), deck.end(), std::mt19937(std::random_device()()));
 }
 
+void BattleManager::RemoveCard(Card* usedCard)
+{
+    hand.erase(std::remove(hand.begin(), hand.end(), usedCard), hand.end());
+}
+
 Card* BattleManager::CreateCard(const EngineContext& context, const CardData& data)
 {
     auto cardObj = std::make_unique<Card>();
