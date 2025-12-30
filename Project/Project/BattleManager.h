@@ -24,6 +24,7 @@ public:
     }
 
     void RemoveCard(Card* usedCard);
+    void ClearAllCards();
 private:
     Card* CreateCard(const EngineContext& context, const CardData& data);
 

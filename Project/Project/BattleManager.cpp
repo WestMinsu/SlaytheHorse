@@ -61,6 +61,25 @@ void BattleManager::RemoveCard(Card* usedCard)
     hand.erase(std::remove(hand.begin(), hand.end(), usedCard), hand.end());
 }
 
+void BattleManager::ClearAllCards()
+{
+    for (auto* card : hand)
+        if (card)
+            card->KillAll();
+
+    for (auto* card : deck)
+        if (card)
+            card->KillAll();
+
+    for (auto* card : discardPile)
+        if (card)
+            card->KillAll();
+
+    hand.clear();
+    deck.clear();
+    discardPile.clear();
+}
+
 Card* BattleManager::CreateCard(const EngineContext& context, const CardData& data)
 {
     auto cardObj = std::make_unique<Card>();
