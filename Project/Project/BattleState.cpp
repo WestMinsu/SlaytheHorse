@@ -21,6 +21,17 @@ void BattleState::Init(const EngineContext& engineContext)
     engineContext.soundManager->LoadSound("HitSFX", "TTS/Hit.mp3", false);
     engineContext.soundManager->LoadSound("DeathSFX", "TTS/Death.mp3", false);
 
+    engineContext.soundManager->LoadSound("Card1SFX", "TTS/Card1.mp3", false);
+    engineContext.soundManager->LoadSound("Card2SFX", "TTS/Card2.mp3", false);
+    engineContext.soundManager->LoadSound("Card3SFX", "TTS/Card3.mp3", false);
+    engineContext.soundManager->LoadSound("Card4SFX", "TTS/Card4.mp3", false);
+    engineContext.soundManager->LoadSound("Card5SFX", "TTS/Card5.mp3", false);
+    engineContext.soundManager->LoadSound("Card6SFX", "TTS/Card6.mp3", false);
+    engineContext.soundManager->LoadSound("Card7SFX", "TTS/Card7.mp3", false);
+    engineContext.soundManager->LoadSound("Card8SFX", "TTS/Card8.mp3", false);
+    engineContext.soundManager->LoadSound("Card9SFX", "TTS/Card9.mp3", false);
+    engineContext.soundManager->LoadSound("Card10SFX", "TTS/Card10.mp3", false);
+
     battleManager = new BattleManager();
 
     battleManager->SetupDeck(engineContext);
@@ -91,6 +102,8 @@ void BattleState::Update(float dt, const EngineContext& engineContext)
                 inputField->SetInteractable(false);
 
             battleManager->DiscardAllCardFromHand();
+
+            player->power = 0;
 
             currentState = TurnState::EnemyTurn;
             transitionTimer = 1.5f;
@@ -188,6 +201,11 @@ void BattleState::ReturnToMainMenu(const EngineContext& context)
         context.stateManager->ChangeState(std::make_unique<MainMenu>());
 }
 
+void BattleState::ModifyCurrentTurnTime(int amount)
+{
+    currentTurnTime += amount;
+}
+
 void BattleState::OnProcessInput(const std::string& text, const EngineContext& context)
 {
     JIN_LOG("Player typed: " << text);
@@ -204,9 +222,6 @@ void BattleState::OnProcessInput(const std::string& text, const EngineContext& c
         {
             JIN_LOG("Commit Success: " << text);
 
-            card->UseCard(context);
-
-            // [성공 텍스트 생성] 초록색 (R:0.2, G:1.0, B:0.2)
             if (font)
             {
                 std::string msg = u8"사용 성공!\n" + card->GetCardName();
@@ -216,6 +231,8 @@ void BattleState::OnProcessInput(const std::string& text, const EngineContext& c
                 // GameState가 가지고 있는 ObjectManager에 등록
                 GetObjectManager().AddObject(std::move(floatText));
             }
+
+            card->UseCard(context);
 
             return;
         }

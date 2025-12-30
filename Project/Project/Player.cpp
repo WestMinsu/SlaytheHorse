@@ -51,6 +51,20 @@ void Player::Init(const EngineContext& context)
         hpBarText = static_cast<TextObject*>(
             context.stateManager->GetCurrentState()->GetObjectManager().AddObject(std::move(tObj), GetTag() + "_Text")
             );
+
+        auto pObj = std::make_unique<TextObject>(font, "+0", TextAlignH::Center, TextAlignV::Middle);
+        powerText = pObj.get();
+
+        powerText->SetColor(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+        powerText->SetRenderLayer("[Layer]UIText");
+        powerText->GetTransform2D().SetDepth(900.0f);
+
+        glm::vec2 fixedPos = hpBarText->GetTransform2D().GetPosition() + glm::vec2(48.0f, 0.f);
+        powerText->GetTransform2D().SetPosition(fixedPos);
+
+        powerText->SetVisibility(false);
+
+        context.stateManager->GetCurrentState()->GetObjectManager().AddObject(std::move(pObj));
     }
 }
 
@@ -156,12 +170,65 @@ void Player::ModifyHealth(int amount, const EngineContext& context)
     }
 }
 
+void Player::ModifyPower(int amount, const EngineContext& context)
+{
+    power += amount;
+
+    if (power < 0)
+        power = 0;
+    Font* font = context.renderManager->GetFontByTag("[Font]default");
+    if (font)
+    {
+        glm::vec4 color;
+        std::string msg;
+
+        // 힘이 증가할 때
+        if (amount > 0)
+        {
+            // 노란색 (R:1.0, G:1.0, B:0.0)
+            color = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f);
+            msg = "+" + std::to_string(amount);
+
+            // 힘 증가 효과음이 있다면 재생 (예시)
+            // context.soundManager->Play("BuffSFX"); 
+        }
+
+        // 랜덤 위치 계산 (플레이어 머리 위쪽 주변)
+        static std::mt19937 rng(std::random_device{}());
+        std::uniform_real_distribution<float> dist(-30.0f, 30.0f);
+
+        glm::vec2 playerPos = this->GetTransform2D().GetPosition();
+        // Y축으로 +50.0f를 더해 머리 위쪽에 뜨게 설정
+        glm::vec2 spawnPos = playerPos + glm::vec2(dist(rng), dist(rng) + 50.0f);
+
+        // FloatingText 생성 및 ObjectManager에 등록
+        auto floatText = std::make_unique<FloatingText>(font, msg, spawnPos, color);
+
+        GameState* state = context.stateManager->GetCurrentState();
+        if (state)
+        {
+            state->GetObjectManager().AddObject(std::move(floatText));
+        }
+    }
+
+    if (powerText)
+    {
+        if (power > 0)
+        {
+            // 힘이 1 이상이면 텍스트 갱신 및 보이기
+            powerText->SetText("+" + std::to_string(power));
+            powerText->SetVisibility(true);
+        }
+        else
+        {
+            // 힘이 0이면 숨기기
+            powerText->SetVisibility(false);
+        }
+    }
+
+}
+
 int Player::GetCurrHP()
 {
 	return currHP;
-}
-
-int Player::GetPower()
-{
-    return power;
 }
