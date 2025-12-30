@@ -160,3 +160,8 @@ int Player::GetCurrHP()
 {
 	return currHP;
 }
+
+int Player::GetPower()
+{
+    return power;
+}

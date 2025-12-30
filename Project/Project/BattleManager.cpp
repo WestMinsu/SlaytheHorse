@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <random>
 #include <iostream>
+#include "BattleState.h"
 
 static std::string WrapText(const std::string& text, size_t maxLineLength)
 {
@@ -32,6 +33,13 @@ static std::string WrapText(const std::string& text, size_t maxLineLength)
 
 void BattleManager::SetupDeck(const EngineContext& context)
 {
+    AddCard(GlobalCardTemplates[GetCardIndex(u8"발차기")], context);
+    AddCard(GlobalCardTemplates[GetCardIndex(u8"발차기")], context);
+    AddCard(GlobalCardTemplates[GetCardIndex(u8"발차기")], context);
+    AddCard(GlobalCardTemplates[GetCardIndex(u8"말차 한 잔")], context);
+    AddCard(GlobalCardTemplates[GetCardIndex(u8"말차 한 잔")], context);
+    AddCard(GlobalCardTemplates[GetCardIndex(u8"말차 한 잔")], context);
+    AddCard(GlobalCardTemplates[GetCardIndex(u8"강한 발차기")], context);
     AddCard(GlobalCardTemplates[GetCardIndex(u8"발차기")], context);
     AddCard(GlobalCardTemplates[GetCardIndex(u8"발차기")], context);
     AddCard(GlobalCardTemplates[GetCardIndex(u8"발차기")], context);
@@ -76,8 +84,15 @@ Card* BattleManager::CreateCard(const EngineContext& context, const CardData& da
     return ptr;
 }
 
-void BattleManager::DrawCard(int count)
+void BattleManager::DrawCard(const EngineContext& context, int count)
 {
+    BattleState* BS = static_cast<BattleState*>(context.stateManager->GetCurrentState());
+
+    if (count + hand.size() > BS->player->maxHandCount)
+    {
+        count = BS->player->maxHandCount - hand.size();
+    }
+
     for (int i = 0; i < count; ++i)
     {
         if (deck.empty())

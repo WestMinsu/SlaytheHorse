@@ -44,7 +44,7 @@ void BattleState::Init(const EngineContext& engineContext)
             this->OnProcessInput(text, context);
         };
 
-    battleManager->DrawCard(player->drawCardCnt);
+    battleManager->DrawCard(engineContext, player->drawCardCnt);
 
     auto font = engineContext.renderManager->GetFontByTag("[Font]default");
     auto timerTextObj = std::make_unique<TextObject>(font, "Time: 10.0", TextAlignH::Center, TextAlignV::Middle);
@@ -122,7 +122,7 @@ void BattleState::Update(float dt, const EngineContext& engineContext)
                 inputField->SetInteractable(true);
                 inputField->SetFocus(true);
             }
-            battleManager->DrawCard(player->drawCardCnt);
+            battleManager->DrawCard(engineContext, player->drawCardCnt);
         }
     }
 
