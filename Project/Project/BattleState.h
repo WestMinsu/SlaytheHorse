@@ -21,8 +21,6 @@ public:
     void Free(const EngineContext& engineContext) override;
     void ReturnToMainMenu(const EngineContext& context);
 
-    void ModifyCurrentTurnTime(int amount);
-
     InputField* inputField = nullptr;
 
     Player* player = nullptr;
@@ -53,4 +51,6 @@ private:
 
     void PrepareNextStageTransition(const EngineContext& context);
     std::string GenerateRandomSpacedText();
+
+    bool isSpawning = false;
 };

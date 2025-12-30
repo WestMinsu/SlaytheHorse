@@ -24,17 +24,6 @@ void BattleState::Init(const EngineContext& engineContext)
     engineContext.soundManager->LoadSound("EnemyHitSFX", "TTS/EnemyHit.mp3", false);
     engineContext.soundManager->LoadSound("BossHitSFX", "TTS/BossHit.mp3", false);
 
-    engineContext.soundManager->LoadSound("Card1SFX", "TTS/Card1.mp3", false);
-    engineContext.soundManager->LoadSound("Card2SFX", "TTS/Card2.mp3", false);
-    engineContext.soundManager->LoadSound("Card3SFX", "TTS/Card3.mp3", false);
-    engineContext.soundManager->LoadSound("Card4SFX", "TTS/Card4.mp3", false);
-    engineContext.soundManager->LoadSound("Card5SFX", "TTS/Card5.mp3", false);
-    engineContext.soundManager->LoadSound("Card6SFX", "TTS/Card6.mp3", false);
-    engineContext.soundManager->LoadSound("Card7SFX", "TTS/Card7.mp3", false);
-    engineContext.soundManager->LoadSound("Card8SFX", "TTS/Card8.mp3", false);
-    engineContext.soundManager->LoadSound("Card9SFX", "TTS/Card9.mp3", false);
-    engineContext.soundManager->LoadSound("Card10SFX", "TTS/Card10.mp3", false);
-
     battleManager = new BattleManager();
     battleManager->SetupDeck(engineContext);
 
@@ -116,10 +105,14 @@ void BattleState::Update(float dt, const EngineContext& context)
             }
 
             currentTurnTime = 2.5f;
+
             JIN_LOG(u8"실패! 다시 입력: " << nextStageTargetText);
+
+            return;
         }
     }
-    else if (currentState == TurnState::PlayerTurn)
+
+    if (currentState == TurnState::PlayerTurn)
     {
         if (turnNoticeText)
         {
@@ -141,18 +134,20 @@ void BattleState::Update(float dt, const EngineContext& context)
 
             battleManager->DiscardAllCardFromHand();
 
-            player->power = 0;
-
             currentState = TurnState::EnemyTurn;
             transitionTimer = 1.5f;
+
             JIN_LOG(u8"적의 턴 시작!");
+
         }
     }
     else if (currentState == TurnState::EnemyTurn)
     {
         if (turnNoticeText)
         {
+
             turnNoticeText->SetText(u8"적 턴 입니다.");
+
         }
 
         transitionTimer -= dt;
@@ -241,11 +236,6 @@ void BattleState::ReturnToMainMenu(const EngineContext& context)
         context.stateManager->ChangeState(std::make_unique<MainMenu>());
 }
 
-void BattleState::ModifyCurrentTurnTime(int amount)
-{
-    currentTurnTime += amount;
-}
-
 void BattleState::OnProcessInput(const std::string& text, const EngineContext& context)
 {
     if (currentState == TurnState::NextStageWait)
@@ -258,17 +248,13 @@ void BattleState::OnProcessInput(const std::string& text, const EngineContext& c
             nextStageCard = nullptr;
             battleManager->SetupDeck(context);
             battleManager->DrawCard(context, 5);
-
             SpawnNextEnemy(context);
 
             maxTurnTime = 10.0f;
             currentTurnTime = maxTurnTime;
             currentState = TurnState::PlayerTurn;
 
-            if (inputField)
-            {
-                inputField->SetFocus(true);
-            }
+            return;
         }
         else
         {
@@ -279,13 +265,16 @@ void BattleState::OnProcessInput(const std::string& text, const EngineContext& c
                 nextStageCard->SetCardName(nextStageTargetText);
 
             currentTurnTime = 2.5f; 
+
             JIN_LOG(u8"오타! 체력이 1 깎였습니다: " << nextStageTargetText);
+
         }
     }
 
     JIN_LOG("Player typed: " << text);
 
     Font* font = context.renderManager->GetFontByTag("[Font]default");
+
 
     glm::vec2 spawnPos = { 0.0f, 50.0f };
 
@@ -294,7 +283,9 @@ void BattleState::OnProcessInput(const std::string& text, const EngineContext& c
         if (card->GetCardName() == text)
         {
             JIN_LOG("Commit Success: " << text);
-            
+
+            card->UseCard(context);
+
             if (font)
             {
                 std::string msg = u8"사용 성공!\n" + card->GetCardName();
@@ -305,8 +296,6 @@ void BattleState::OnProcessInput(const std::string& text, const EngineContext& c
                 GetObjectManager().AddObject(std::move(floatText));
             }
 
-            card->UseCard(context);
-
             return;
         }
     }
@@ -316,6 +305,7 @@ void BattleState::OnProcessInput(const std::string& text, const EngineContext& c
     if (font)
     {
         std::string msg = u8"사용 실패!";
+
         auto floatText = std::make_unique<FloatingText>(
             font, msg, spawnPos, glm::vec4(1.0f, 0.2f, 0.2f, 1.0f)
         );
@@ -359,7 +349,9 @@ void BattleState::PrepareNextStageTransition(const EngineContext& context)
 
     auto cardObj = std::make_unique<Card>();
     cardObj->SetCardName(nextStageTargetText);
+
     cardObj->SetCardDescription(u8"다음 단계로 이동합니다");
+
     cardObj->GetTransform2D().SetPosition({ 0.0f, 0.0f });
 
     nextStageCard = cardObj.get();
@@ -374,7 +366,9 @@ void BattleState::PrepareNextStageTransition(const EngineContext& context)
 
 std::string BattleState::GenerateRandomSpacedText()
 {
+
     std::vector<std::string> syllables = { u8"다", u8"음", u8"단", u8"계", u8"로" };
+
     std::string result = syllables[0];
 
     std::random_device rd;

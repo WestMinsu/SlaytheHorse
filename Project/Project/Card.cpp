@@ -147,6 +147,8 @@ glm::vec4 Card::GetBoundingBox() const
 
 void Card::UseCard(const EngineContext& engineContext)
 {
+    JIN_LOG("Using Card: " << this->cardName);
+
     BattleState* BS = static_cast<BattleState*>(engineContext.stateManager->GetCurrentState());
 
     std::vector<Object*> enemies;
@@ -240,6 +242,7 @@ void Card::UseCard(const EngineContext& engineContext)
         BS->player->ModifyHealth(-1, engineContext);
         BS->player->ModifyPower(3, engineContext);
     }
+
     BS->battleManager->DiscardCard(this);
 }
 
