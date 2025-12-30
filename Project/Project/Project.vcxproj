@@ -237,6 +237,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="HangulAutomata.h" />
     <ClInclude Include="InputField.h" />
     <ClInclude Include="BattleManager.h" />
@@ -249,6 +250,7 @@
   <ItemGroup>
     <ClCompile Include="BattleManager.cpp" />
     <ClCompile Include="Card.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="HangulAutomata.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="BattleState.cpp" />
