@@ -147,10 +147,76 @@ glm::vec4 Card::GetBoundingBox() const
 
 void Card::UseCard(const EngineContext& engineContext)
 {
-    JIN_LOG("Using Card: " << this->cardName);
-
     BattleState* BS = static_cast<BattleState*>(engineContext.stateManager->GetCurrentState());
 
+    if (this->cardName == u8"발차기")
+    {
+        JIN_LOG("Using Card: " << this->cardName);
+        engineContext.soundManager->Play("Card1SFX"); 
+       //
+    }
+    else if (this->cardName == u8"말차 한 잔")
+    {
+        JIN_LOG("Using Card: " << this->cardName);
+        engineContext.soundManager->Play("Card2SFX");
+
+        BS->player->ModifyHealth(2, engineContext);
+    }
+    else if (this->cardName == u8"강한 발차기")
+    {
+        JIN_LOG("Using Card: " << this->cardName);
+        engineContext.soundManager->Play("Card3SFX");
+        //
+    }
+    else if (this->cardName == u8"양말")
+    {
+        JIN_LOG("Using Card: " << this->cardName);
+        engineContext.soundManager->Play("Card4SFX");
+
+        BS->player->ModifyPower(1, engineContext);
+    }
+    else if (this->cardName == u8"히히힝")
+    {
+        JIN_LOG("Using Card: " << this->cardName);
+        engineContext.soundManager->Play("Card5SFX");
+
+        BS->battleManager->DrawCard(engineContext, 2);
+    }
+    else if (this->cardName == u8"말 달리자")
+    {
+        JIN_LOG("Using Card: " << this->cardName);
+        engineContext.soundManager->Play("Card6SFX");
+
+        BS->battleManager->DrawCard(engineContext, 1);
+        BS->ModifyCurrentTurnTime(2);
+    }
+    else if (this->cardName == u8"내가 그린 기린 그림")
+    {
+        JIN_LOG("Using Card: " << this->cardName);
+        engineContext.soundManager->Play("Card7SFX");
+        //
+    }
+    else if (this->cardName == u8"슬 레이 더 홀  스")
+    {
+        JIN_LOG("Using Card: " << this->cardName);
+        engineContext.soundManager->Play("Card8SFX");
+
+        BS->player->ModifyHealth(6, engineContext);
+    }
+    else if (this->cardName == u8"           ")
+    {
+        JIN_LOG("Using Card: " << this->cardName);
+        engineContext.soundManager->Play("Card9SFX");
+        //
+    }
+    else if (this->cardName == u8"맘마미아")
+    {
+        JIN_LOG("Using Card: " << this->cardName);
+        engineContext.soundManager->Play("Card10SFX");
+
+        BS->player->ModifyHealth(-1, engineContext);
+        BS->player->ModifyPower(3, engineContext);
+    }
     BS->battleManager->DiscardCard(this);
 }
 
