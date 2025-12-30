@@ -149,11 +149,19 @@ void Card::UseCard(const EngineContext& engineContext)
 {
     BattleState* BS = static_cast<BattleState*>(engineContext.stateManager->GetCurrentState());
 
+    std::vector<Object*> enemies;
+    engineContext.stateManager->GetCurrentState()->GetObjectManager().FindByTag("[Object]Enemy", enemies);
+
     if (this->cardName == u8"발차기")
     {
         JIN_LOG("Using Card: " << this->cardName);
         engineContext.soundManager->Play("Card1SFX"); 
-       //
+       
+        if (!enemies.empty())
+        {
+            Enemy* target = static_cast<Enemy*>(enemies[0]);
+            target->ModifyHealth(-2, engineContext);
+        }
     }
     else if (this->cardName == u8"말차 한 잔")
     {
@@ -166,7 +174,12 @@ void Card::UseCard(const EngineContext& engineContext)
     {
         JIN_LOG("Using Card: " << this->cardName);
         engineContext.soundManager->Play("Card3SFX");
-        //
+        
+        if (!enemies.empty())
+        {
+            Enemy* target = static_cast<Enemy*>(enemies[0]);
+            target->ModifyHealth(-4, engineContext);
+        }
     }
     else if (this->cardName == u8"양말")
     {
@@ -194,7 +207,12 @@ void Card::UseCard(const EngineContext& engineContext)
     {
         JIN_LOG("Using Card: " << this->cardName);
         engineContext.soundManager->Play("Card7SFX");
-        //
+        
+        if (!enemies.empty())
+        {
+            Enemy* target = static_cast<Enemy*>(enemies[0]);
+            target->ModifyHealth(-6, engineContext);
+        }
     }
     else if (this->cardName == u8"슬 레이 더 홀  스")
     {
@@ -207,7 +225,12 @@ void Card::UseCard(const EngineContext& engineContext)
     {
         JIN_LOG("Using Card: " << this->cardName);
         engineContext.soundManager->Play("Card9SFX");
-        //
+        
+        if (!enemies.empty())
+        {
+            Enemy* target = static_cast<Enemy*>(enemies[0]);
+            target->ModifyHealth(-10, engineContext);
+        }
     }
     else if (this->cardName == u8"맘마미아")
     {

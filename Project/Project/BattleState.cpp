@@ -1,4 +1,4 @@
-#include "BattleState.h"
+﻿#include "BattleState.h"
 #include "Card.h"
 #include "InputManager.h"
 #include "Player.h"
@@ -21,6 +21,8 @@ void BattleState::Init(const EngineContext& engineContext)
     engineContext.soundManager->LoadSound("HealSFX", "TTS/Heal.mp3", false);
     engineContext.soundManager->LoadSound("HitSFX", "TTS/Hit.mp3", false);
     engineContext.soundManager->LoadSound("DeathSFX", "TTS/Death.mp3", false);
+    engineContext.soundManager->LoadSound("EnemyHitSFX", "TTS/EnemyHit.mp3", false);
+    engineContext.soundManager->LoadSound("BossHitSFX", "TTS/BossHit.mp3", false);
 
     engineContext.soundManager->LoadSound("Card1SFX", "TTS/Card1.mp3", false);
     engineContext.soundManager->LoadSound("Card2SFX", "TTS/Card2.mp3", false);
@@ -114,7 +116,7 @@ void BattleState::Update(float dt, const EngineContext& context)
             }
 
             currentTurnTime = 2.5f;
-            JIN_LOG(u8"???! ?ٽ? ?Է?: " << nextStageTargetText);
+            JIN_LOG(u8"실패! 다시 입력: " << nextStageTargetText);
         }
     }
     else if (currentState == TurnState::PlayerTurn)
@@ -143,14 +145,14 @@ void BattleState::Update(float dt, const EngineContext& context)
 
             currentState = TurnState::EnemyTurn;
             transitionTimer = 1.5f;
-            JIN_LOG(u8"???? ? ???!");
+            JIN_LOG(u8"적의 턴 시작!");
         }
     }
     else if (currentState == TurnState::EnemyTurn)
     {
         if (turnNoticeText)
         {
-            turnNoticeText->SetText(u8"?? ? ?Դϴ?");
+            turnNoticeText->SetText(u8"적 턴 입니다.");
         }
 
         transitionTimer -= dt;
@@ -277,16 +279,14 @@ void BattleState::OnProcessInput(const std::string& text, const EngineContext& c
                 nextStageCard->SetCardName(nextStageTargetText);
 
             currentTurnTime = 2.5f; 
-            JIN_LOG(u8"??Ÿ! ü??? 1 ?𿴽??ϴ?: " << nextStageTargetText);
+            JIN_LOG(u8"오타! 체력이 1 깎였습니다: " << nextStageTargetText);
         }
     }
 
     JIN_LOG("Player typed: " << text);
 
-    // 1. ?Ʈ ???????? (????? ?ε? ?Ʈ ??? ??)
     Font* font = context.renderManager->GetFontByTag("[Font]default");
 
-    // 2. ???Ʈ?? ??Ÿ?? ??ġ ???? (ȭ?? ?߾?: 0,0 / ??信 ???? ????)
     glm::vec2 spawnPos = { 0.0f, 50.0f };
 
     for (const auto& card : battleManager->GetHand())
@@ -297,11 +297,11 @@ void BattleState::OnProcessInput(const std::string& text, const EngineContext& c
             
             if (font)
             {
-                std::string msg = u8"?? ????!\n" + card->GetCardName();
+                std::string msg = u8"사용 성공!\n" + card->GetCardName();
                 auto floatText = std::make_unique<FloatingText>(
                     font, msg, spawnPos, glm::vec4(0.2f, 1.0f, 0.2f, 1.0f)
                 );
-                // GameState?? ?????? ?ִ? ObjectManager?? ??
+
                 GetObjectManager().AddObject(std::move(floatText));
             }
 
@@ -315,7 +315,7 @@ void BattleState::OnProcessInput(const std::string& text, const EngineContext& c
 
     if (font)
     {
-        std::string msg = u8"?? ???!";
+        std::string msg = u8"사용 실패!";
         auto floatText = std::make_unique<FloatingText>(
             font, msg, spawnPos, glm::vec4(1.0f, 0.2f, 0.2f, 1.0f)
         );
@@ -331,13 +331,13 @@ void BattleState::SpawnNextEnemy(const EngineContext& context)
     switch (currentRound)
     {
     case 1:
-        newEnemy = std::make_unique<Enemy>(u8"??", glm::vec2(300.f, 0.f), EnemyType::Normal);
+        newEnemy = std::make_unique<Enemy>(u8"말", glm::vec2(300.f, 0.f), EnemyType::Normal);
         break;
     case 2:
-        newEnemy = std::make_unique<Enemy>(u8"???? ??", glm::vec2(300.f, 0.f), EnemyType::Angry);
+        newEnemy = std::make_unique<Enemy>(u8"성난 말", glm::vec2(300.f, 0.f), EnemyType::Angry);
         break;
     case 3: 
-        newEnemy = std::make_unique<Enemy>(u8"???? ??", glm::vec2(300.f, 0.f), EnemyType::Fast);
+        newEnemy = std::make_unique<Enemy>(u8"빠른 말", glm::vec2(300.f, 0.f), EnemyType::Fast);
         break;
     case 4:
         newEnemy = std::make_unique<Enemy>(glm::vec2(300.f, 0.f), glm::vec2(256.f, 256.f));
@@ -359,7 +359,7 @@ void BattleState::PrepareNextStageTransition(const EngineContext& context)
 
     auto cardObj = std::make_unique<Card>();
     cardObj->SetCardName(nextStageTargetText);
-    cardObj->SetCardDescription(u8"??? ?ܰ? ?̵???ϴ?");
+    cardObj->SetCardDescription(u8"다음 단계로 이동합니다");
     cardObj->GetTransform2D().SetPosition({ 0.0f, 0.0f });
 
     nextStageCard = cardObj.get();
@@ -374,7 +374,7 @@ void BattleState::PrepareNextStageTransition(const EngineContext& context)
 
 std::string BattleState::GenerateRandomSpacedText()
 {
-    std::vector<std::string> syllables = { u8"??", u8"??", u8"??", u8"??", u8"??" };
+    std::vector<std::string> syllables = { u8"다", u8"음", u8"단", u8"계", u8"로" };
     std::string result = syllables[0];
 
     std::random_device rd;
