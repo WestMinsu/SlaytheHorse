@@ -69,27 +69,23 @@ void Enemy::Attack(Player* player, float& currentTurnTime, const EngineContext& 
     switch (type)
     {
     case EnemyType::Fast:
-        // 빠른 말: 데미지는 약하지만 플레이어의 다음 턴 시간을 2초 뺏음
         player->ModifyHealth(-1, context);
         currentTurnTime -= 2.0f;
         JIN_LOG(u8"빠른 말이 시간을 훔쳤습니다!");
         break;
 
     case EnemyType::Angry:
-        // 성난 말: 강력한 데미지
         player->ModifyHealth(-3, context);
         JIN_LOG(u8"성난 말이 강력하게 발길질합니다!");
         break;
 
     case EnemyType::Boss:
-        // 보스: 큰 데미지 + 시간 대폭 감소
         player->ModifyHealth(-5, context);
         currentTurnTime -= 5.0f;
         JIN_LOG(u8"최종 보스가 포효합니다!");
         break;
 
     default:
-        // 일반 말: 기본 데미지
         player->ModifyHealth(-2, context);
         JIN_LOG(u8"말이 공격했습니다.");
         break;

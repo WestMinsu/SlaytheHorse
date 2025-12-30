@@ -106,7 +106,7 @@ void BattleState::Update(float dt, const EngineContext& engineContext)
                 inputField->SetInteractable(true);
                 inputField->SetFocus(true);
             }
-            battleManager.DrawCard(1);
+            battleManager->DrawCard(1);
         }
     }
 
