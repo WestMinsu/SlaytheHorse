@@ -10,4 +10,7 @@ public:
 private:
 	glm::vec2 initSize;
 	glm::vec2 initPos;
+
+	int maxHP = 20;
+	int currHP = 20;
 };
