@@ -10,6 +10,9 @@ void BattleState::Init(const EngineContext& engineContext)
     engineContext.renderManager->RegisterTexture("[Texture]Player", "Textures/Horse.png");
     engineContext.renderManager->RegisterMaterial("[Material]Player", "[EngineShader]default_texture", { {"u_Texture","[Texture]Player"} });
 
+    engineContext.soundManager->LoadSound("HealSFX", "TTS/Heal.mp3", false);
+    engineContext.soundManager->LoadSound("HitSFX", "TTS/Hit.mp3", false);
+
     battleManager.SetupDeck(engineContext);
 
     auto playerObj = objectManager.AddObject(std::make_unique<Player>(glm::vec2(-300.f, 0.f), glm::vec2(128.f, 128.f)), "[Object]Player");
@@ -18,9 +21,9 @@ void BattleState::Init(const EngineContext& engineContext)
     auto inputFieldObj = objectManager.AddObject(std::make_unique<InputField>(glm::vec2(0, 250.f), glm::vec2(300.0f, 150.0f)), "[Object]InputField");
     inputField = static_cast<InputField*>(inputFieldObj);
 
-    inputField->onCommit = [this](const std::string& text)
+    inputField->onCommit = [this](const std::string& text, const EngineContext& context)
         {
-            this->OnProcessInput(text);
+            this->OnProcessInput(text, context);
         };
 
     battleManager.DrawCard(5);
@@ -59,7 +62,21 @@ void BattleState::Free(const EngineContext& engineContext)
     engineContext.renderManager->UnregisterMaterial("[Material]Button", engineContext);
 }
 
-void BattleState::OnProcessInput(const std::string& text)
+void BattleState::OnProcessInput(const std::string& text, const EngineContext& context)
 {
     JIN_LOG("Player typed: " << text);
+
+    for (const auto& card : battleManager.GetHand())
+    {
+        if (card->GetCardName() == text)
+        {
+            JIN_LOG("Commit Success: " << text);
+
+            //card use
+
+            return;
+        }
+    }
+
+    player->ModifyHealth(-1, context);
 }

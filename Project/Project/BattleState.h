@@ -14,7 +14,7 @@ public:
 private:
     BattleManager battleManager;
 
-    void OnProcessInput(const std::string& text);
+    void OnProcessInput(const std::string& text, const EngineContext& context);
 
     InputField* inputField = nullptr;
 

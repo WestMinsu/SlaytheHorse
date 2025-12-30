@@ -141,15 +141,33 @@ std::wstring HangulAutomata::GetDisplayString() const
 
 void HangulAutomata::Type(char c)
 {
+    // 1. 기본 매핑 시도 (대문자면 UPPER 테이블, 소문자면 LOWER 테이블 조회)
     int inCho = GetMapValue(c, MAP_CHO_LOWER, MAP_CHO_UPPER);
     int inJung = GetMapValue(c, MAP_JUNG_LOWER, MAP_JUNG_UPPER);
     int inJong = GetMapValue(c, MAP_JONG_LOWER, MAP_JONG_UPPER);
 
+    // [버그 수정] Shift 키(대문자)가 눌렸지만, 쌍자음/이중모음이 아닌 경우 처리
+    // 예: Shift+'a'('A')는 특수 한글이 없으므로 -1이 반환됨 -> 소문자 'a'('ㅁ')로 다시 조회해야 함
+    if (std::isupper(c))
+    {
+        // 셋 다 매핑되지 않았다면 소문자로 변환해서 재시도
+        if (inCho == -1 && inJung == -1 && inJong == -1)
+        {
+            char lowerC = std::tolower(c);
+            inCho = GetMapValue(lowerC, MAP_CHO_LOWER, MAP_CHO_UPPER);
+            inJung = GetMapValue(lowerC, MAP_JUNG_LOWER, MAP_JUNG_UPPER);
+            inJong = GetMapValue(lowerC, MAP_JONG_LOWER, MAP_JONG_UPPER);
+        }
+    }
+
+    // 여전히 매핑되지 않았다면(특수문자, 공백 등) 영문/기호 그대로 출력
     if (inCho == -1 && inJung == -1) {
         CommitState();
         completeText += (wchar_t)c;
         return;
     }
+
+    // ... (이하 기존 로직 동일) ...
 
     if (nCho == -1 && nJung == -1) {
         if (inCho != -1) {
@@ -160,6 +178,9 @@ void HangulAutomata::Type(char c)
         }
         return;
     }
+
+    // ... (나머지 Type 함수 내용 그대로 유지) ...
+    // 아래 코드는 기존 코드의 나머지 부분입니다 (복사해서 붙여넣으세요)
 
     if (nCho != -1 && nJung == -1) {
         if (inJung != -1) {
