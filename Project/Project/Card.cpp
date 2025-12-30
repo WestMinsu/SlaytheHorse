@@ -16,15 +16,14 @@ void Card::Init(const EngineContext& engineContext)
     SetMaterial(engineContext, "[Material]Card");
 
     originalScale = { 150.0f, 210.0f };
-    hoverScale = originalScale * hoverMultiplier; 
+    hoverScale = originalScale * hoverMultiplier;
 
     GetTransform2D().SetScale(originalScale);
     originalDepth = GetTransform2D().GetDepth();
     basePosition = GetTransform2D().GetPosition(); 
-
-    SetRenderLayer("[Layer]UIText");
-
     hoverUpOffset = (hoverScale.y - originalScale.y) / 2.0f;
+    
+    SetRenderLayer("[Layer]UIText");
 
     auto font = engineContext.renderManager->GetFontByTag("[Font]default");
     if (font)
@@ -35,15 +34,100 @@ void Card::Init(const EngineContext& engineContext)
         textDisplay->GetTransform2D().SetDepth(originalDepth + 0.1f);
         originalTextScale = textDisplay->GetTransform2D().GetScale();
 
-        if (engineContext.stateManager->GetCurrentState())
-            engineContext.stateManager->GetCurrentState()->GetObjectManager().AddObject(std::move(textObj));
+        auto currentState = engineContext.stateManager->GetCurrentState();
+        if (!currentState) 
+            return;
+
+        auto nameObj = std::make_unique<TextObject>(font, cardName, TextAlignH::Center, TextAlignV::Middle);
+        textDisplay = nameObj.get();
+        textDisplay->SetRenderLayer("[Layer]UIText");
+        textDisplay->GetTransform2D().SetDepth(originalDepth + 0.2f);
+        textDisplay->GetTransform2D().SetScale(textDisplay->GetTransform2D().GetScale() * 0.7f);
+        originalNameScale = textDisplay->GetTransform2D().GetScale(); 
+        currentState->GetObjectManager().AddObject(std::move(nameObj));
+
+        auto lineObj = std::make_unique<GameObject>();
+        separatorLine = lineObj.get();
+        separatorLine->SetMesh(engineContext, "[EngineMesh]default"); 
+        separatorLine->SetMaterial(engineContext, "[Material]Button");
+        separatorLine->SetRenderLayer("[Layer]UIText");
+        separatorLine->GetTransform2D().SetScale({ 110.0f, 1.5f });
+        originalLineScale = separatorLine->GetTransform2D().GetScale(); 
+
+        separatorLine->GetTransform2D().SetDepth(originalDepth + 0.1f);
+        currentState->GetObjectManager().AddObject(std::move(lineObj));
+
+        auto descObj = std::make_unique<TextObject>(font, cardDescription, TextAlignH::Center, TextAlignV::Top);
+        descriptionDisplay = descObj.get();
+        descriptionDisplay->SetRenderLayer("[Layer]UIText");
+        descriptionDisplay->GetTransform2D().SetDepth(originalDepth + 0.2f);
+
+        descriptionDisplay->GetTransform2D().SetScale(originalNameScale * 0.7f);
+        originalDescScale = descriptionDisplay->GetTransform2D().GetScale();
+
+        currentState->GetObjectManager().AddObject(std::move(descObj));
     }
 }
 
 void Card::Update(float dt, const EngineContext& engineContext)
 {
+    float currentMultiplier = isHovered ? hoverMultiplier : 1.0f;
+    glm::vec2 currentPos = GetTransform2D().GetPosition();
+
     if (textDisplay)
-        textDisplay->GetTransform2D().SetPosition(GetTransform2D().GetPosition());
+        textDisplay->GetTransform2D().SetPosition(currentPos + glm::vec2(0.0f, nameYOffset * currentMultiplier));
+
+    if (separatorLine)
+        separatorLine->GetTransform2D().SetPosition(currentPos + glm::vec2(0.0f, lineYOffset * currentMultiplier));
+
+    if (descriptionDisplay)
+        descriptionDisplay->GetTransform2D().SetPosition(currentPos + glm::vec2(0.0f, descYOffset * currentMultiplier));
+}
+
+void Card::SetHoverState(bool hover)
+{
+    if (isHovered == hover) return;
+
+    isHovered = hover;
+    float targetDepth = isHovered ? originalDepth + 1.0f : originalDepth;
+    glm::vec2 targetScale = isHovered ? hoverScale : originalScale;
+    glm::vec2 targetPos = isHovered ? (basePosition + glm::vec2(0.0f, hoverUpOffset)) : basePosition;
+
+    GetTransform2D().SetScale(targetScale);
+    GetTransform2D().SetDepth(targetDepth);
+    GetTransform2D().SetPosition(targetPos);
+
+    float textMultiplier = isHovered ? hoverMultiplier : 1.0f;
+
+    if (textDisplay)
+    {
+        textDisplay->GetTransform2D().SetScale(originalNameScale * textMultiplier);
+        textDisplay->GetTransform2D().SetDepth(targetDepth + 0.2f);
+    }
+
+    if (separatorLine)
+    {
+        separatorLine->GetTransform2D().SetScale(originalLineScale * textMultiplier);
+        separatorLine->GetTransform2D().SetDepth(targetDepth + 0.1f);
+    }
+
+    if (descriptionDisplay)
+    {
+        descriptionDisplay->GetTransform2D().SetScale(originalDescScale * textMultiplier);
+        descriptionDisplay->GetTransform2D().SetDepth(targetDepth + 0.2f);
+    }
+}
+
+void Card::SetCardDescription(const std::string& desc)
+{
+    cardDescription = desc;
+    if (descriptionDisplay)
+        descriptionDisplay->SetText(desc);
+}
+
+std::string Card::GetCardDescription() const
+{
+    return cardDescription;
 }
 
 void Card::SetBasePosition(const glm::vec2& pos)
@@ -53,35 +137,6 @@ void Card::SetBasePosition(const glm::vec2& pos)
         GetTransform2D().SetPosition(basePosition);
 }
 
-void Card::SetHoverState(bool hover)
-{
-    if (isHovered == hover) return;
-
-    isHovered = hover;
-    if (isHovered)
-    {
-        GetTransform2D().SetScale(hoverScale);
-        GetTransform2D().SetDepth(originalDepth - 1.0f);
-        GetTransform2D().SetPosition(basePosition + glm::vec2(0.0f, hoverUpOffset));
-        if (textDisplay)
-        {
-            textDisplay->GetTransform2D().SetScale(originalTextScale * hoverMultiplier);
-            textDisplay->GetTransform2D().SetDepth(originalDepth - 1.1f);
-        }
-    }
-    else
-    {
-        GetTransform2D().SetScale(originalScale);
-        GetTransform2D().SetDepth(originalDepth);
-        GetTransform2D().SetPosition(basePosition);
-
-        if (textDisplay)
-        {
-            textDisplay->GetTransform2D().SetScale(originalTextScale);
-            textDisplay->GetTransform2D().SetDepth(originalDepth - 0.1f);
-        }
-    }
-}
 glm::vec4 Card::GetBoundingBox() const
 {
     glm::vec2 pos = GetWorldPosition();

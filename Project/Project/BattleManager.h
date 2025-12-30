@@ -6,6 +6,12 @@
 class Card;
 struct EngineContext;
 
+struct CardData
+{
+    std::string name;
+    std::string description;
+};
+
 class BattleManager
 {
 public:
@@ -18,6 +24,8 @@ public:
     }
 
 private:
+    Card* CreateCard(const EngineContext& context, const CardData& data);
+
     std::vector<Card*> deck;        
     std::vector<Card*> hand;       
     std::vector<Card*> discardPile; 
