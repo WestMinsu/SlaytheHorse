@@ -5,6 +5,7 @@
 #include "Enemy.h"
 #include "MainMenu.h"
 #include <random>
+#include "FloatingText.h"
 
 void BattleState::Init(const EngineContext& engineContext)
 {
@@ -37,7 +38,7 @@ void BattleState::Init(const EngineContext& engineContext)
             this->OnProcessInput(text, context);
         };
 
-    battleManager->DrawCard(5);
+    battleManager->DrawCard(engineContext, player->drawCardCnt);
 
     auto font = engineContext.renderManager->GetFontByTag("[Font]default");
     auto timerTextObj = std::make_unique<TextObject>(font, "Time: 10.0", TextAlignH::Center, TextAlignV::Middle);
@@ -125,6 +126,8 @@ void BattleState::Update(float dt, const EngineContext& context)
                 inputField->SetInteractable(false);
             }
 
+            battleManager->DiscardAllCardFromHand();
+
             currentState = TurnState::EnemyTurn;
             transitionTimer = 1.5f;
             JIN_LOG(u8"적의 턴 시작!");
@@ -158,8 +161,7 @@ void BattleState::Update(float dt, const EngineContext& context)
                 inputField->SetInteractable(true);
                 inputField->SetFocus(true);
             }
-
-            battleManager->DrawCard(1);
+            battleManager->DrawCard(context, player->drawCardCnt);
         }
     }
 
@@ -235,7 +237,7 @@ void BattleState::OnProcessInput(const std::string& text, const EngineContext& c
 
             nextStageCard = nullptr;
             battleManager->SetupDeck(context);
-            battleManager->DrawCard(5);
+            battleManager->DrawCard(context, 5);
 
             SpawnNextEnemy(context);
 
@@ -263,6 +265,12 @@ void BattleState::OnProcessInput(const std::string& text, const EngineContext& c
 
     JIN_LOG("Player typed: " << text);
 
+    // 1. 폰트 가져오기 (기존에 로드된 폰트 태그 사용)
+    Font* font = context.renderManager->GetFontByTag("[Font]default");
+
+    // 2. 텍스트가 나타날 위치 설정 (화면 중앙: 0,0 / 필요에 따라 수정)
+    glm::vec2 spawnPos = { 0.0f, 50.0f };
+
     for (const auto& card : battleManager->GetHand())
     {
         if (card->GetCardName() == text)
@@ -279,11 +287,31 @@ void BattleState::OnProcessInput(const std::string& text, const EngineContext& c
             }
 
             card->UseCard(context);
+
+            if (font)
+            {
+                std::string msg = u8"사용 성공!\n" + card->GetCardName();
+                auto floatText = std::make_unique<FloatingText>(
+                    font, msg, spawnPos, glm::vec4(0.2f, 1.0f, 0.2f, 1.0f)
+                );
+                // GameState가 가지고 있는 ObjectManager에 등록
+                GetObjectManager().AddObject(std::move(floatText));
+            }
+
             return;
         }
     }
 
     player->ModifyHealth(-1, context);
+
+    if (font)
+    {
+        std::string msg = u8"사용 실패!";
+        auto floatText = std::make_unique<FloatingText>(
+            font, msg, spawnPos, glm::vec4(1.0f, 0.2f, 0.2f, 1.0f)
+        );
+        GetObjectManager().AddObject(std::move(floatText));
+    }
 }
 
 void BattleState::SpawnNextEnemy(const EngineContext& context)

@@ -14,6 +14,12 @@ public:
 	void ModifyHealth(int amount, const EngineContext& context);
 
 	int GetCurrHP();
+
+	int GetPower();
+
+	int drawCardCnt = 20;
+
+	int maxHandCount = 7;
 private:
 	glm::vec2 initSize;
 	glm::vec2 initPos;
@@ -23,6 +29,8 @@ private:
 
 	int maxHP = 20;
 	int currHP = 20;
+
+	int power = 0;
 
 	bool isDead = false;
 	float outTimer = 0.f;

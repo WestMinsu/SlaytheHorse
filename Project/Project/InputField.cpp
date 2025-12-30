@@ -149,7 +149,7 @@ void InputField::Update(float dt, const EngineContext& context)
     {
         // 포커스가 없을 때
         if (textObject)
-            textObject->SetText(displayStr.empty() ? "Click to type..." : displayStr);
+            textObject->SetText(displayStr.empty() ? u8"클릭 후 입력..." : displayStr);
     }
 }
 
