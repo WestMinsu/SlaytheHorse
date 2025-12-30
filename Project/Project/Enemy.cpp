@@ -10,13 +10,17 @@ Enemy::Enemy(const std::string& name, const glm::vec2& pos, EnemyType type_)
     : enemyName(name), type(type_), isBoss(false)
 {
     GetTransform2D().SetPosition(pos);
+    hp = 10;
+    maxHP = 10;
 }
 
 Enemy::Enemy(const glm::vec2& pos, const glm::vec2& size)
-    : enemyName(u8"최종 보스 말"), isBoss(true)
+    : enemyName(u8"최종 보스 말"), isBoss(true), type(EnemyType::Boss)
 {
     GetTransform2D().SetPosition(pos);
     GetTransform2D().SetScale(size);
+    hp = 30;
+    maxHP = 30;
 }
 
 void Enemy::Init(const EngineContext& engineContext)
@@ -62,34 +66,45 @@ void Enemy::Init(const EngineContext& engineContext)
         attackDisplay->GetTransform2D().SetScale({ 1.2f, 1.2f });
         attackDisplay->SetColor({ 1.0f, 1.0f, 0.0f, 1.0f });
 
-        auto currentState = engineContext.stateManager->GetCurrentState();
-        if (currentState)
-            currentState->GetObjectManager().AddObject(std::move(attackTextObj));
+        engineContext.stateManager->GetCurrentState()->GetObjectManager().AddObject(std::move(attackTextObj));
+
+        auto hpBarObj = std::make_unique<GameObject>();
+        hpBarObj->SetMesh(engineContext, "[EngineMesh]default");
+        hpBarObj->SetMaterial(engineContext, "[Material]Card");
+        hpBarObj->GetTransform2D().SetScale({ 128.f, 32.f });
+        glm::vec2 pos = GetTransform2D().GetPosition();
+        hpBarObj->GetTransform2D().SetPosition({ pos.x, pos.y - 100.f });
+        hpBarObj->SetColor({ 0.f, 0.f, 0.f, 1.0f });
+        hpBar = static_cast<GameObject*>(engineContext.stateManager->GetCurrentState()->GetObjectManager().AddObject(std::move(hpBarObj)));
+
+        auto hpTextObj = std::make_unique<TextObject>(font, std::to_string(hp), TextAlignH::Center, TextAlignV::Middle);
+        hpBarText = hpTextObj.get();
+        hpBarText->GetTransform2D().SetPosition(hpBar->GetTransform2D().GetPosition());
+        hpBarText->GetTransform2D().SetDepth(hpBar->GetTransform2D().GetDepth() + 0.1f);
+        hpBarText->SetColor({ 1.f, 1.f, 1.f, 1.f });
+        engineContext.stateManager->GetCurrentState()->GetObjectManager().AddObject(std::move(hpTextObj));
     }
 }
 
 void Enemy::Update(float dt, const EngineContext& engineContext)
 {
     totalTime += dt;
-    float hoverOffset = sin(totalTime * 5.0f) * 15.0f;
+    float speed = (type == EnemyType::Fast) ? 20.0f : 5.0f;
+    float amplitude = 15.0f;
+    float hoverOffset = sin(totalTime * speed) * amplitude;
     glm::vec2 basePos = GetTransform2D().GetPosition();
 
     if (nameDisplay)
-    {
-        float speed = 5.0f;    
-        float amplitude = 15.0f; 
-
-        if (type == EnemyType::Fast)
-            speed = 20.0f; 
-
-        float hoverOffset = sin(totalTime * speed) * amplitude;
-        glm::vec2 basePos = GetTransform2D().GetPosition();
-
         nameDisplay->GetTransform2D().SetPosition({ basePos.x, basePos.y + hoverOffset });
 
-        if (attackDisplay)
-            attackDisplay->GetTransform2D().SetPosition({ basePos.x, basePos.y + 80.0f + hoverOffset });
-    }
+    if (attackDisplay)
+        attackDisplay->GetTransform2D().SetPosition({ basePos.x, basePos.y + 85.0f + hoverOffset });
+
+    if (hpBar)
+        hpBar->GetTransform2D().SetPosition({ basePos.x, basePos.y + 55.0f + hoverOffset });
+
+    if (hpBarText && hpBar)
+        hpBarText->GetTransform2D().SetPosition(hpBar->GetTransform2D().GetPosition());
 
     if (attackDisplayTimer > 0.0f)
     {
@@ -130,4 +145,23 @@ void Enemy::Attack(Player* player, float& currentTurnTime, const EngineContext& 
         attackDisplay->SetText(u8"말이 공격했습니다.");
         break;
     }
+}
+
+void Enemy::ModifyHealth(int amount, const EngineContext& context)
+{
+    hp = std::max(0, hp + amount);
+    if (hpBarText)
+        hpBarText->SetText(std::to_string(hp));
+
+    if (amount < 0)
+        context.soundManager->Play("HitSFX"); 
+}
+
+void Enemy::KillAll()
+{
+    if (nameDisplay) nameDisplay->Kill();
+    if (attackDisplay) attackDisplay->Kill();
+    if (hpBar) hpBar->Kill();
+    if (hpBarText) hpBarText->Kill();
+    this->Kill();
 }

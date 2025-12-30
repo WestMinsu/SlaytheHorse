@@ -9,7 +9,8 @@ enum class TurnState
 {
     PlayerTurn,
     EnemyTurn,
-    Transition  
+    Transition,
+    NextStageWait
 };
 
 class BattleState : public GameState
@@ -43,4 +44,13 @@ private:
     Enemy* enemy = nullptr;
     float transitionTimer = 0.0f;
     TextObject* turnNoticeText = nullptr;
+
+    int currentRound = 0;
+    void SpawnNextEnemy(const EngineContext& context);
+
+    std::string nextStageTargetText; 
+    Card* nextStageCard = nullptr;   
+
+    void PrepareNextStageTransition(const EngineContext& context);
+    std::string GenerateRandomSpacedText();
 };

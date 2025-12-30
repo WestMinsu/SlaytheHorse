@@ -60,6 +60,7 @@ public:
         return hand;
     }
 
+    void ClearAllCards();
     void DiscardCard(Card* card);
     void DiscardAllCardFromHand();
 private:

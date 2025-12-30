@@ -23,6 +23,14 @@ public:
     void Init(const EngineContext& engineContext) override;
     void Update(float dt, const EngineContext& engineContext) override;
     void Attack(Player* player, float& currentTurnTime, const EngineContext& context);
+    void KillAll();
+
+    void ModifyHealth(int amount, const EngineContext& context);
+
+    int GetHealth() const
+    {
+        return hp;
+    }
 
 private:
     std::string enemyName;
@@ -32,4 +40,8 @@ private:
     float totalTime = 0.0f;
     TextObject* attackDisplay = nullptr; 
     float attackDisplayTimer = 0.0f;
+    int hp = 10;
+    int maxHP = 10;
+    GameObject* hpBar = nullptr;
+    TextObject* hpBarText = nullptr;
 };
