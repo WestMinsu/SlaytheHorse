@@ -40,4 +40,5 @@ private:
     TurnState currentState = TurnState::PlayerTurn;
     Enemy* enemy = nullptr;
     float transitionTimer = 0.0f;
+    TextObject* turnNoticeText = nullptr;
 };

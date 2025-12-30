@@ -25,7 +25,7 @@ void Enemy::Init(const EngineContext& engineContext)
     {
         SetMesh(engineContext, "[EngineMesh]default");
         SetMaterial(engineContext, "[Material]Enemy");
-        SetFlipUV_X(true);
+        //SetFlipUV_X(true);
     }
     else
     {
@@ -41,53 +41,93 @@ void Enemy::Init(const EngineContext& engineContext)
             nameDisplay->GetTransform2D().SetScale({ 2.0f, 2.0f }); 
             nameDisplay->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
 
+            if (type == EnemyType::Angry)
+                nameDisplay->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f }); 
+            else
+                nameDisplay->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+
             auto currentState = engineContext.stateManager->GetCurrentState();
             if (currentState)
                 currentState->GetObjectManager().AddObject(std::move(textObj));
         }
+    }
+
+    auto font = engineContext.renderManager->GetFontByTag("[Font]default");
+    if (font)
+    {
+        auto attackTextObj = std::make_unique<TextObject>(font, u8"", TextAlignH::Center, TextAlignV::Middle);
+        attackDisplay = attackTextObj.get();
+        attackDisplay->SetRenderLayer("[Layer]UIText");
+        attackDisplay->GetTransform2D().SetDepth(0.1f);
+        attackDisplay->GetTransform2D().SetScale({ 1.2f, 1.2f });
+        attackDisplay->SetColor({ 1.0f, 1.0f, 0.0f, 1.0f });
+
+        auto currentState = engineContext.stateManager->GetCurrentState();
+        if (currentState)
+            currentState->GetObjectManager().AddObject(std::move(attackTextObj));
     }
 }
 
 void Enemy::Update(float dt, const EngineContext& engineContext)
 {
     totalTime += dt;
+    float hoverOffset = sin(totalTime * 5.0f) * 15.0f;
+    glm::vec2 basePos = GetTransform2D().GetPosition();
 
     if (nameDisplay)
     {
-        float hoverOffset = sin(totalTime * 5.0f) * 20.0f;
+        float speed = 5.0f;    
+        float amplitude = 15.0f; 
+
+        if (type == EnemyType::Fast)
+            speed = 20.0f; 
+
+        float hoverOffset = sin(totalTime * speed) * amplitude;
         glm::vec2 basePos = GetTransform2D().GetPosition();
 
         nameDisplay->GetTransform2D().SetPosition({ basePos.x, basePos.y + hoverOffset });
+
+        if (attackDisplay)
+            attackDisplay->GetTransform2D().SetPosition({ basePos.x, basePos.y + 80.0f + hoverOffset });
+    }
+
+    if (attackDisplayTimer > 0.0f)
+    {
+        attackDisplayTimer -= dt;
+        if (attackDisplayTimer <= 0.0f)
+            attackDisplay->SetText(u8"");
     }
 }
 
 void Enemy::Attack(Player* player, float& currentTurnTime, const EngineContext& context)
 {
-    if (!player) 
+    if (!player || !attackDisplay)
         return;
+
+    attackDisplayTimer = 2.0f; 
 
     switch (type)
     {
     case EnemyType::Fast:
         player->ModifyHealth(-1, context);
         currentTurnTime -= 2.0f;
-        JIN_LOG(u8"빠른 말이 시간을 훔쳤습니다!");
+        attackDisplay->SetText(u8"빠른 말이 시간을 훔쳤습니다!");
         break;
 
     case EnemyType::Angry:
         player->ModifyHealth(-3, context);
-        JIN_LOG(u8"성난 말이 강력하게 발길질합니다!");
+        attackDisplay->SetText(u8"성난 말이 강력하게 발길질합니다!");
         break;
 
     case EnemyType::Boss:
         player->ModifyHealth(-5, context);
         currentTurnTime -= 5.0f;
-        JIN_LOG(u8"최종 보스가 포효합니다!");
+        attackDisplay->SetText(u8"최종 보스가 포효합니다!");
         break;
 
     default:
         player->ModifyHealth(-2, context);
-        JIN_LOG(u8"말이 공격했습니다.");
+        attackDisplay->SetText(u8"말이 공격했습니다.");
         break;
     }
 }

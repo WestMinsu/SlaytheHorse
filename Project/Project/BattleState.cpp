@@ -62,6 +62,13 @@ void BattleState::Init(const EngineContext& engineContext)
     objectManager.AddObject(std::move(timerBarObj));
 
     currentTurnTime = maxTurnTime;
+
+    auto turnNoticeObj = std::make_unique<TextObject>(font, u8"", TextAlignH::Center, TextAlignV::Middle);
+    turnNoticeText = turnNoticeObj.get();
+    turnNoticeText->GetTransform2D().SetPosition({ 0.0f, 250.0f });
+    turnNoticeText->SetRenderLayer("[Layer]UIText");
+    turnNoticeText->GetTransform2D().SetScale({ 1.5f, 1.5f });
+    objectManager.AddObject(std::move(turnNoticeObj));
 }
 
 void BattleState::Update(float dt, const EngineContext& engineContext)
@@ -70,6 +77,9 @@ void BattleState::Update(float dt, const EngineContext& engineContext)
 
     if (currentState == TurnState::PlayerTurn)
     {
+        if (turnNoticeText)
+            turnNoticeText->SetText(u8"");
+
         if (currentTurnTime > 0.0f)
             currentTurnTime -= dt;
 
@@ -88,6 +98,9 @@ void BattleState::Update(float dt, const EngineContext& engineContext)
     }
     else if (currentState == TurnState::EnemyTurn)
     {
+        if (turnNoticeText)
+            turnNoticeText->SetText(u8"적 턴 입니다");
+
         transitionTimer -= dt;
         if (transitionTimer <= 0.0f)
         {

@@ -63,4 +63,4 @@ private:
     std::vector<Card*> deck;        
     std::vector<Card*> hand;       
     std::vector<Card*> discardPile; 
-};
+};  
