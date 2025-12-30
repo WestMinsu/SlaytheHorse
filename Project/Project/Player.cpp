@@ -1,6 +1,7 @@
 #include "Player.h"
 #include <algorithm>
 #include "GameState.h"
+#include "BattleState.h"
 
 Player::Player(const glm::vec2& pos, const glm::vec2& size)
 : initSize(size), initPos(pos) {}
@@ -51,6 +52,44 @@ void Player::Init(const EngineContext& context)
     }
 }
 
+void Player::Update(float dt, const EngineContext& context)
+{
+    if (isDead)
+    {
+        float targetRot = glm::radians(180.0f);
+        float rotateSpeed = glm::radians(180.0f);
+
+        float currentRot = GetTransform2D().GetRotation();
+
+        if (currentRot < targetRot)
+        {
+            float nextRot = currentRot + (rotateSpeed * dt);
+
+            if (nextRot > targetRot)
+            {
+                nextRot = targetRot;
+            }
+
+            GetTransform2D().SetRotation(nextRot);
+        }
+        else
+        {
+            GetTransform2D().SetRotation(targetRot);
+
+            outTimer += dt;
+
+            if (outTimer >= 2.0f)
+            {
+                BattleState* BS = static_cast<BattleState*>(context.stateManager->GetCurrentState());
+                if (BS)
+                {
+                    BS->ReturnToMainMenu(context);
+                }
+            }
+        }
+    }
+}
+
 void Player::ModifyHealth(int amount, const EngineContext& context)
 {
     int prevHP = currHP;
@@ -72,7 +111,11 @@ void Player::ModifyHealth(int amount, const EngineContext& context)
 
 	if (currHP == 0)
 	{
-		//Death
+        context.soundManager->Play("DeathSFX");
+        isDead = true;
+        outTimer = 0.f;
+        BattleState* BS = static_cast<BattleState*>(context.stateManager->GetCurrentState());
+        BS->inputField->SetInteractable(false);
 	}
 }
 

@@ -1,6 +1,7 @@
 #include "BattleState.h"
 #include "Card.h"
 #include "InputManager.h"
+#include "MainMenu.h"
 
 void BattleState::Init(const EngineContext& engineContext)
 {
@@ -12,6 +13,7 @@ void BattleState::Init(const EngineContext& engineContext)
 
     engineContext.soundManager->LoadSound("HealSFX", "TTS/Heal.mp3", false);
     engineContext.soundManager->LoadSound("HitSFX", "TTS/Hit.mp3", false);
+    engineContext.soundManager->LoadSound("DeathSFX", "TTS/Death.mp3", false);
 
     battleManager.SetupDeck(engineContext);
 
@@ -60,6 +62,12 @@ void BattleState::Free(const EngineContext& engineContext)
 {
     engineContext.renderManager->UnregisterTexture("[Texture]Button", engineContext);
     engineContext.renderManager->UnregisterMaterial("[Material]Button", engineContext);
+}
+
+void BattleState::ReturnToMainMenu(const EngineContext& context)
+{
+    if (context.stateManager != nullptr)
+        context.stateManager->ChangeState(std::make_unique<MainMenu>());
 }
 
 void BattleState::OnProcessInput(const std::string& text, const EngineContext& context)

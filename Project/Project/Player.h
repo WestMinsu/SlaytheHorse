@@ -9,6 +9,8 @@ public:
 
 	void Init(const EngineContext& context) override;
 
+	void Update(float dt, const EngineContext& context) override;
+
 	void ModifyHealth(int amount, const EngineContext& context);
 
 	int GetCurrHP();
@@ -21,4 +23,7 @@ private:
 
 	int maxHP = 20;
 	int currHP = 20;
+
+	bool isDead = false;
+	float outTimer = 0.f;
 };
