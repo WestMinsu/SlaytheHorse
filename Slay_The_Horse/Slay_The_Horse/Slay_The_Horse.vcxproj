@@ -30,7 +30,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{a9b72d14-7d7c-4ffe-a3e7-8cabd9caa79e}</ProjectGuid>
-    <RootNamespace>Project</RootNamespace>
+    <RootNamespace>Slay_The_Horse</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
