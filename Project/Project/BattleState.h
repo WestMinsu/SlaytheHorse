@@ -12,7 +12,8 @@ enum class TurnState
     Transition,
     NextStageWait,
     CardSelect,
-    BossDialogue
+    BossDialogue,
+    Ending
 };
 
 struct DialogueData
@@ -36,6 +37,8 @@ public:
     BattleManager* battleManager = nullptr;;
 
     void ModifyCurrentTurnTime(int amount);
+
+    void StartEnding(const EngineContext& context);
 private:
     void OnProcessInput(const std::string& text, const EngineContext& context);
 

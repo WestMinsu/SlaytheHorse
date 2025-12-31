@@ -215,6 +215,8 @@ void WindowManager::SetWindowIcon(const std::string& iconPath)
 {
     if (!window) return;
 
+    stbi_set_flip_vertically_on_load(false);
+
     GLFWimage images[1];
     int channels;
 
@@ -236,4 +238,6 @@ void WindowManager::SetWindowIcon(const std::string& iconPath)
     {
         JIN_ERR("Failed to load window icon: " << iconPath);
     }
+
+    stbi_set_flip_vertically_on_load(true);
 }

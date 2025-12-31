@@ -43,8 +43,8 @@ void MainMenu::Init(const EngineContext& engineContext)
 
 	mainText->SetVisibility(false);
 
-	auto startButton = objectManager.AddObject(std::make_unique<Button>(glm::vec2(0, -100.f), glm::vec2(200.0f, 60.0f), "Start Game"), "[Object]button");
-	auto exitButton = objectManager.AddObject(std::make_unique<Button>(glm::vec2(0, -200.f), glm::vec2(200.0f, 60.0f), "Exit"), "[Object]button");
+	auto startButton = objectManager.AddObject(std::make_unique<Button>(glm::vec2(0, -100.f), glm::vec2(200.0f, 60.0f), u8"게임 시작"), "[Object]button");
+	auto exitButton = objectManager.AddObject(std::make_unique<Button>(glm::vec2(0, -200.f), glm::vec2(200.0f, 60.0f), u8"게임 나가기"), "[Object]button");
 
 	if (Button* startButtonPtr = static_cast<Button*>(startButton))
 	{

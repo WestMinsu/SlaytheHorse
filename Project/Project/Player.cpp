@@ -242,3 +242,10 @@ void Player::ModifyPower(int amount, const EngineContext& context)
         }
     }
 }
+
+void Player::HideUI()
+{
+    hpBar->SetVisibility(false);
+    hpBarText->SetVisibility(false);
+    powerText->SetVisibility(false);
+}
