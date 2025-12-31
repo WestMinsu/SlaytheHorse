@@ -11,6 +11,7 @@ enum class TurnState
     EnemyTurn,
     Transition,
     NextStageWait,
+    CardSelect,
     BossDialogue
 };
 
@@ -70,4 +71,22 @@ private:
     void ProcessDialogueInput(const std::string& text, const EngineContext& context);
     void UpdateTimerUI();
     void UpdateCardLayout(const EngineContext& context);
+    std::vector<Card*> selectionCards;
+    void PrepareCardSelection(const EngineContext& context);
+    void OnSelectCard(int cardIndex, const EngineContext& context);
+
+    bool isDeckViewOpen = false;       // 덱 보기 창이 열려있는지 여부
+    GameObject* deckButton = nullptr;  // 우측 상단 '덱' 버튼 배경
+    TextObject* deckButtonText = nullptr; // '덱' 텍스트
+
+    GameObject* deckViewOverlay = nullptr;     // 반투명 검정 배경
+    GameObject* deckViewCloseButton = nullptr; // 닫기 버튼 (흰색)
+
+    std::vector<Card*> deckViewCards;  // 덱 보기 화면에 띄워진 임시 카드들
+
+    // [추가] 덱 보기 관련 함수
+    void CreateDeckViewUI(const EngineContext& context); // 초기화 시 UI 생성
+    void OpenDeckView(const EngineContext& context);     // 창 열기
+    void CloseDeckView(const EngineContext& context);    // 창 닫기
+    void UpdateDeckViewInput(const EngineContext& context); // 창 열렸을 때 입력 처리
 };
