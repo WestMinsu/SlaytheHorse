@@ -23,9 +23,9 @@ public:
     void Init(const EngineContext& engineContext) override;
     void Update(float dt, const EngineContext& engineContext) override;
     void Attack(Player* player, float& currentTurnTime, const EngineContext& context);
-    void KillAll();
-
+    void KillAll(const EngineContext& context);
     void ModifyHealth(int amount, const EngineContext& context);
+    void SetAsBoss(const EngineContext& context);
 
     int GetHealth() const
     {
@@ -44,4 +44,6 @@ private:
     int maxHP = 10;
     GameObject* hpBar = nullptr;
     TextObject* hpBarText = nullptr;
+    float oscillationTime = 0.0f;
+    glm::vec2 basePosition = { 0.0f, 0.0f };
 };

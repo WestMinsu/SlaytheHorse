@@ -11,7 +11,14 @@ enum class TurnState
     EnemyTurn,
     Transition,
     NextStageWait,
-    CardSelect
+    CardSelect,
+    BossDialogue
+};
+
+struct DialogueData
+{
+    std::string bossLine;
+    std::string playerResponse;
 };
 
 class BattleState : public GameState
@@ -57,6 +64,13 @@ private:
 
     bool isSpawning = false;
 
+    std::vector<DialogueData> bossDialogues;
+    int currentDialogueIdx = 0;
+    bool isBossBattle = false;
+    void StartBossDialogue(const EngineContext& context);
+    void ProcessDialogueInput(const std::string& text, const EngineContext& context);
+    void UpdateTimerUI();
+    void UpdateCardLayout(const EngineContext& context);
     std::vector<Card*> selectionCards;
     void PrepareCardSelection(const EngineContext& context);
     void OnSelectCard(int cardIndex, const EngineContext& context);

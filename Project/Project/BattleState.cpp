@@ -33,6 +33,11 @@ static std::string WrapTextLocal(const std::string& text, size_t maxLineLength)
 
 void BattleState::Init(const EngineContext& engineContext)
 {
+    bossDialogues = {
+        { u8"히히힝! 나는야 진짜 말이라네!", u8"너 말 아니지?" },
+        { u8"무슨 소리! 이 완벽한 털과 근육을 보게!", u8"지퍼가 다 보이는데?" },
+        { u8"젠장! 들켰군! 하지만 내 타자는 피할 수 없다!", u8"덤벼라 가짜 말!" }
+    };
     engineContext.renderManager->RegisterTexture("[Texture]Button", "Textures/test1.png");
     engineContext.renderManager->RegisterMaterial("[Material]Button", "[EngineShader]default_texture", { {"u_Texture","[Texture]Button"} });
 
@@ -41,6 +46,9 @@ void BattleState::Init(const EngineContext& engineContext)
 
     engineContext.renderManager->RegisterTexture("[Texture]Enemy", "Textures/Horse.png");
     engineContext.renderManager->RegisterMaterial("[Material]Enemy", "[EngineShader]default_texture", { {"u_Texture","[Texture]Enemy"} });
+
+    engineContext.renderManager->RegisterTexture("[Texture]Boss", "Textures/Boss.png");
+    engineContext.renderManager->RegisterMaterial("[Material]Boss", "[EngineShader]default_texture", { {"u_Texture","[Texture]Boss"} });
 
     engineContext.soundManager->LoadSound("Card1SFX", "TTS/Card1.mp3", false);
     engineContext.soundManager->LoadSound("Card2SFX", "TTS/Card2.mp3", false);
@@ -101,6 +109,8 @@ void BattleState::Init(const EngineContext& engineContext)
     turnNoticeText->GetTransform2D().SetPosition({ 0.0f, 250.0f });
     turnNoticeText->SetRenderLayer("[Layer]UIText");
     turnNoticeText->GetTransform2D().SetScale({ 1.5f, 1.5f });
+    turnNoticeText->GetTransform2D().SetDepth(999.0f);
+    turnNoticeText->SetColor({ 1.0f, 1.0f, 0.0f, 1.0f });
     objectManager.AddObject(std::move(turnNoticeObj));
 
     CreateDeckViewUI(engineContext);
@@ -109,6 +119,32 @@ void BattleState::Init(const EngineContext& engineContext)
 void BattleState::Update(float dt, const EngineContext& context)
 {
     GameState::Update(dt, context);
+
+    if (currentState == TurnState::BossDialogue)
+    {
+        if (!player->IsDead())
+            currentTurnTime -= dt;
+
+        if (currentTurnTime <= 0.0f)
+        {
+            player->ModifyHealth(-1, context);
+            currentTurnTime = maxTurnTime;
+            JIN_LOG(u8"보스의 압박!");
+        }
+
+        std::vector<Object*> enemies;
+        objectManager.FindByTag("[Object]Enemy", enemies);
+
+        if (!enemies.empty() && turnNoticeText)
+        {
+            glm::vec2 bossPos = enemies[0]->GetTransform2D().GetPosition();
+            turnNoticeText->GetTransform2D().SetPosition({ bossPos.x, bossPos.y + 120.0f });
+            turnNoticeText->GetTransform2D().SetScale({ 1.0f, 1.0f });
+        }
+
+        UpdateTimerUI();
+        return;
+    }
 
     std::vector<Object*> enemies;
     objectManager.FindByTag("[Object]Enemy", enemies);
@@ -155,17 +191,13 @@ void BattleState::Update(float dt, const EngineContext& context)
     if (enemies.empty())
     {
         if (currentState != TurnState::NextStageWait && currentState != TurnState::CardSelect && currentRound < 4)
-        {
             PrepareNextStageTransition(context);
-        }
     }
     else
     {
         Enemy* enemy = static_cast<Enemy*>(enemies[0]);
         if (enemy->GetHealth() <= 0)
-        {
-            enemy->KillAll();
-        }
+            enemy->KillAll(context);
     }
 
     if (currentState == TurnState::NextStageWait)
@@ -183,25 +215,22 @@ void BattleState::Update(float dt, const EngineContext& context)
             player->ModifyHealth(-1, context);
             nextStageTargetText = GenerateRandomSpacedText();
             if (nextStageCard)
-            {
                 nextStageCard->SetCardName(nextStageTargetText);
-            }
 
             currentTurnTime = 2.5f;
-
-            JIN_LOG(u8"실패! 다시 입력: " << nextStageTargetText);
-
             return;
         }
     }
-
-    if (currentState == TurnState::PlayerTurn)
+    else if (currentState == TurnState::PlayerTurn)
     {
-        if (turnNoticeText)
-            turnNoticeText->SetText(u8"");
-
         if (currentTurnTime > 0.0f && !player->IsDead())
             currentTurnTime -= dt;
+
+        if (turnNoticeText && turnNoticeText->GetTextInstance()->text != "")
+        {
+            if (currentTurnTime < maxTurnTime - 1.5f)
+                turnNoticeText->SetText("");
+        }
 
         if (currentTurnTime <= 0.0f)
         {
@@ -213,30 +242,30 @@ void BattleState::Update(float dt, const EngineContext& context)
             currentState = TurnState::EnemyTurn;
             transitionTimer = 1.5f;
 
-            JIN_LOG(u8"적의 턴 시작!");
+            if (turnNoticeText)
+            {
+                turnNoticeText->SetText(u8"적의 턴");
+                turnNoticeText->GetTransform2D().SetPosition({ 0.0f, 250.0f });
+            }
         }
     }
     else if (currentState == TurnState::EnemyTurn)
     {
-        if (turnNoticeText)
-            turnNoticeText->SetText(u8"적 턴 입니다.");
-
         transitionTimer -= dt;
-
         if (transitionTimer <= 0.0f)
         {
             currentTurnTime = maxTurnTime;
-
             std::vector<Object*> enemyObjects;
             objectManager.FindByTag("[Object]Enemy", enemyObjects);
 
             if (!enemyObjects.empty())
-            {
-                Enemy* currentEnemy = static_cast<Enemy*>(enemyObjects[0]);
-                currentEnemy->Attack(player, currentTurnTime, context);
-            }
+                static_cast<Enemy*>(enemyObjects[0])->Attack(player, currentTurnTime, context);
 
             currentState = TurnState::PlayerTurn;
+
+            if (turnNoticeText)
+                turnNoticeText->SetText("");
+
             if (inputField)
             {
                 inputField->SetInteractable(true);
@@ -246,9 +275,11 @@ void BattleState::Update(float dt, const EngineContext& context)
         }
     }
 
+    UpdateCardLayout(context);
+    UpdateTimerUI();
+
     if (currentState == TurnState::CardSelect)
     {
-        // [수정] 덱 UI가 닫혀있을 때만 상호작용 가능
         if (!isDeckViewOpen)
         {
             // 마우스 왼쪽 클릭 감지
@@ -350,7 +381,6 @@ void BattleState::Update(float dt, const EngineContext& context)
         card->SetHoverState(isMouseOver);
     }
 }
-
 void BattleState::Free(const EngineContext& engineContext)
 {
     objectManager.FreeAll(engineContext);
@@ -373,16 +403,20 @@ void BattleState::ReturnToMainMenu(const EngineContext& context)
 
 void BattleState::OnProcessInput(const std::string& text, const EngineContext& context)
 {
+    if (currentState == TurnState::BossDialogue)
+    {
+        ProcessDialogueInput(text, context);
+        return;
+    }
     if (currentState == TurnState::NextStageWait)
     {
         if (text == nextStageTargetText)
         {
             if (nextStageCard)
-            {
                 nextStageCard->KillAll();
-            }
 
             nextStageCard = nullptr;
+
             // SpawnNextEnemy(context);
             // battleManager->DrawCard(context, 5);
 
@@ -397,17 +431,12 @@ void BattleState::OnProcessInput(const std::string& text, const EngineContext& c
         else
         {
             player->ModifyHealth(-1, context);
-
             nextStageTargetText = GenerateRandomSpacedText();
             if (nextStageCard)
-            {
                 nextStageCard->SetCardName(nextStageTargetText);
-            }
 
             currentTurnTime = 2.5f;
-
             JIN_LOG(u8"오타! 체력이 1 깎였습니다: " << nextStageTargetText);
-
             return;
         }
     }
@@ -466,25 +495,34 @@ void BattleState::SpawnNextEnemy(const EngineContext& context)
     currentRound++;
 
     std::unique_ptr<Enemy> newEnemy;
-    switch (currentRound)
+
+    if (currentRound == 4)
     {
-    case 1:
-        newEnemy = std::make_unique<Enemy>(u8"말", glm::vec2(300.f, 0.f), EnemyType::Normal);
-        break;
-    case 2:
-        newEnemy = std::make_unique<Enemy>(u8"성난 말", glm::vec2(300.f, 0.f), EnemyType::Angry);
-        break;
-    case 3: 
-        newEnemy = std::make_unique<Enemy>(u8"빠른 말", glm::vec2(300.f, 0.f), EnemyType::Fast);
-        break;
-    case 4:
         newEnemy = std::make_unique<Enemy>(glm::vec2(300.f, 0.f), glm::vec2(256.f, 256.f));
-        break;
-    default:
-        return;
+        objectManager.AddObject(std::move(newEnemy), "[Object]Enemy");
+        StartBossDialogue(context);
+        return; 
+    }
+    else
+    {
+        switch (currentRound)
+        {
+        case 1:
+            newEnemy = std::make_unique<Enemy>(u8"말", glm::vec2(300.f, 0.f), EnemyType::Normal);
+            break;
+        case 2:
+            newEnemy = std::make_unique<Enemy>(u8"성난 말", glm::vec2(300.f, 0.f), EnemyType::Angry);
+            break;
+        case 3:
+            newEnemy = std::make_unique<Enemy>(u8"빠른 말", glm::vec2(300.f, 0.f), EnemyType::Fast);
+            break;
+        default:
+            return;
+        }
     }
 
-    objectManager.AddObject(std::move(newEnemy), "[Object]Enemy");
+    if (newEnemy)
+        objectManager.AddObject(std::move(newEnemy), "[Object]Enemy");
 }
 
 void BattleState::PrepareNextStageTransition(const EngineContext& context)
@@ -540,6 +578,147 @@ std::string BattleState::GenerateRandomSpacedText()
     }
 
     return result;
+}
+
+void BattleState::StartBossDialogue(const EngineContext& context)
+{
+    currentState = TurnState::BossDialogue;
+    currentDialogueIdx = 0;
+
+    if (battleManager)
+        battleManager->DiscardAllCardFromHand();
+
+    bossDialogues = {
+        { u8"히히힝! 나는야 진짜 말이라네!", u8"너 말 아니지" },
+        { u8"무슨 소리! 이 완벽한 털과 근육을 보게!", u8"지퍼가 다 보이는데" },
+        { u8"젠장! 들켰군! 하지만 내 타자는 피할 수 없다!", u8"덤벼라 가짜 말" }
+    };
+
+    nextStageTargetText = bossDialogues[currentDialogueIdx].playerResponse;
+    if (turnNoticeText)
+        turnNoticeText->SetText(bossDialogues[currentDialogueIdx].bossLine);
+
+    auto cardObj = std::make_unique<Card>();
+    cardObj->SetCardName(nextStageTargetText);
+    cardObj->SetCardDescription(u8"보스에게 대답하기");
+    cardObj->GetTransform2D().SetPosition({ 0.0f, 0.0f }); 
+
+    nextStageCard = cardObj.get();
+    objectManager.AddObject(std::move(cardObj));
+
+    if (inputField)
+    {
+        inputField->SetInteractable(true); 
+        inputField->SetFocus(true);       
+    }
+
+    maxTurnTime = 3.5f;
+    currentTurnTime = maxTurnTime;
+}
+
+void BattleState::ProcessDialogueInput(const std::string& text, const EngineContext& context)
+{
+    if (text == nextStageTargetText)
+    {
+        currentDialogueIdx++;
+
+        if (currentDialogueIdx < bossDialogues.size())
+        {
+            nextStageTargetText = bossDialogues[currentDialogueIdx].playerResponse;
+
+            if (turnNoticeText)
+                turnNoticeText->SetText(bossDialogues[currentDialogueIdx].bossLine);
+
+            if (nextStageCard)
+                nextStageCard->SetCardName(nextStageTargetText);
+
+            currentTurnTime = maxTurnTime;
+        }
+        else
+        {
+            if (nextStageCard)
+                nextStageCard->KillAll();
+
+            nextStageCard = nullptr;
+            currentState = TurnState::PlayerTurn;
+            maxTurnTime = 10.0f;
+            currentTurnTime = maxTurnTime;
+
+            std::vector<Object*> enemyObjects;
+            objectManager.FindByTag("[Object]Enemy", enemyObjects);
+            if (!enemyObjects.empty())
+            {
+                Enemy* boss = static_cast<Enemy*>(enemyObjects[0]);
+                boss->SetAsBoss(context); 
+            }
+
+            if (turnNoticeText)
+            {
+                turnNoticeText->SetText(u8"전투 시작!");
+                turnNoticeText->GetTransform2D().SetPosition({ 0.0f, 250.0f });
+            }
+
+            battleManager->DrawCard(context, player->drawCardCnt);
+        }
+    }
+}
+void BattleState::UpdateTimerUI()
+{
+    float ratio = currentTurnTime / maxTurnTime;
+    if (ratio < 0.0f)
+        ratio = 0.0f;
+
+    glm::vec4 currentColor = (ratio <= 0.3f) ? glm::vec4(1.0f, 0.0f, 0.0f, 1.0f) : glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+    if (timerText)
+    {
+        timerText->SetText("Time: " + std::to_string((int)currentTurnTime) + "." + std::to_string((int)(currentTurnTime * 10) % 10));
+        timerText->SetColor(currentColor);
+    }
+
+    if (timerBar)
+    {
+        float newWidth = barBaseScale.x * ratio;
+        timerBar->GetTransform2D().SetScale({ newWidth, barBaseScale.y });
+
+        float offset = (barBaseScale.x - newWidth) / 2.0f;
+        timerBar->GetTransform2D().SetPosition({ barBasePos.x - offset, barBasePos.y });
+        timerBar->SetColor(currentColor);
+    }
+}
+
+void BattleState::UpdateCardLayout(const EngineContext& context)
+{
+    if (battleManager == nullptr)
+        return;
+
+    const auto& currentHand = battleManager->GetHand();
+
+    if (currentHand.empty())
+        return;
+
+    float spacing = 170.0f;
+    float totalWidth = (currentHand.size() - 1) * spacing;
+    float startX = -totalWidth / 2.0f;
+
+    Camera2D* activeCam = GetActiveCamera();
+    glm::vec2 mousePos = context.inputManager->GetMouseWorldPos(activeCam);
+
+    for (size_t i = 0; i < currentHand.size(); ++i)
+    {
+        Card* card = currentHand[i];
+        if (card == nullptr)
+            continue;
+
+        float posX = startX + (i * spacing);
+        card->SetBasePosition({ posX, -250.0f });
+
+        glm::vec4 bounds = card->GetBoundingBox();
+        bool isMouseOver = (mousePos.x >= bounds.x && mousePos.x <= bounds.y &&
+            mousePos.y >= bounds.z && mousePos.y <= bounds.w);
+
+        card->SetHoverState(isMouseOver);
+    }
 }
 
 void BattleState::PrepareCardSelection(const EngineContext& context)
@@ -598,13 +777,14 @@ void BattleState::PrepareCardSelection(const EngineContext& context)
 
 void BattleState::OnSelectCard(int cardIndex, const EngineContext& context)
 {
-    if (cardIndex < 0 || cardIndex >= selectionCards.size()) return;
+    if (cardIndex < 0 || cardIndex >= selectionCards.size())
+    {
+        return;
+    }
 
     Card* selectedUI = selectionCards[cardIndex];
     std::string cardName = selectedUI->GetCardName();
 
-    // 1. 선택한 카드를 실제 플레이어 덱에 추가
-    // BattleManager::AddCard는 CardData를 받으므로 이름으로 원본 데이터를 찾습니다.
     int templateIdx = GetCardIndex(cardName);
     if (templateIdx != -1)
     {
@@ -612,27 +792,26 @@ void BattleState::OnSelectCard(int cardIndex, const EngineContext& context)
         JIN_LOG("덱에 카드 추가됨: " << cardName);
     }
 
-    // 2. 선택지 카드들 모두 제거 (Kill)
     for (auto* card : selectionCards)
     {
         card->KillAll();
     }
     selectionCards.clear();
 
-    // 3. 다음 라운드(전투) 시작 로직 (원래 OnProcessInput에 있던 로직 이동)
     SpawnNextEnemy(context);
-    battleManager->DrawCard(context, 5); // 기본 드로우
 
-    maxTurnTime = 10.0f;
-    currentTurnTime = maxTurnTime;
-
-    currentState = TurnState::PlayerTurn;
-
-    // 입력 필드 다시 활성화
-    if (inputField)
+    if (currentRound < 4)
     {
-        inputField->SetInteractable(true);
-        inputField->SetFocus(true);
+        battleManager->DrawCard(context, 5);
+        maxTurnTime = 10.0f;
+        currentTurnTime = maxTurnTime;
+        currentState = TurnState::PlayerTurn;
+
+        if (inputField)
+        {
+            inputField->SetInteractable(true);
+            inputField->SetFocus(true);
+        }
     }
 }
 
