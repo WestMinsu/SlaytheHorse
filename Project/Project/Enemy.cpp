@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "FloatingText.h"
 #include <random>
+#include "BattleState.h"
 
 Enemy::Enemy(const std::string& name, const glm::vec2& pos, EnemyType type_)
     : enemyName(name), type(type_), isBoss(false)
@@ -165,6 +166,12 @@ void Enemy::Attack(Player* player, float& currentTurnTime, const EngineContext& 
         player->ModifyHealth(-5, context);
         currentTurnTime -= 5.0f;
         attackDisplay->SetText(u8"최종 보스가 포효합니다!");
+
+        {
+            BattleState* BS = static_cast<BattleState*>(context.stateManager->GetCurrentState());
+            if (BS)
+                BS->TriggerShake(0.5f, 15.0f);
+        }
         break;
     case EnemyType::Fast:
         player->ModifyHealth(-3, context);

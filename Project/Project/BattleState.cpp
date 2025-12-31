@@ -127,6 +127,21 @@ void BattleState::Update(float dt, const EngineContext& context)
 {
     GameState::Update(dt, context);
 
+    if (shakeTimer > 0.0f)
+    {
+        shakeTimer -= dt;
+        Camera2D* cam = GetActiveCamera();
+        if (cam)
+        {
+            float offsetX = ((float)rand() / RAND_MAX * 2.0f - 1.0f) * shakeIntensity;
+            float offsetY = ((float)rand() / RAND_MAX * 2.0f - 1.0f) * shakeIntensity;
+            cam->SetPosition(originalCamPos + glm::vec2(offsetX, offsetY));
+        }
+
+        if (shakeTimer <= 0.0f && GetActiveCamera())
+            GetActiveCamera()->SetPosition(originalCamPos);
+    }
+
     if (currentState == TurnState::Ending)
     {
         if (player)
@@ -1082,4 +1097,17 @@ void BattleState::StartEnding(const EngineContext& context)
         };
 
     objectManager.AddObject(std::move(menuBtn), "[Object]Button");
+}
+
+void BattleState::TriggerShake(float duration, float intensity)
+{
+    if (shakeTimer <= 0.0f)
+    {
+        Camera2D* cam = GetActiveCamera();
+        if (cam)
+            originalCamPos = cam->GetPosition();
+    }
+
+    shakeTimer = duration;
+    shakeIntensity = intensity;
 }

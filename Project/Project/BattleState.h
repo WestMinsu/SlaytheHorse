@@ -39,6 +39,7 @@ public:
     void ModifyCurrentTurnTime(int amount);
 
     void StartEnding(const EngineContext& context);
+    void TriggerShake(float duration, float intensity);
 private:
     void OnProcessInput(const std::string& text, const EngineContext& context);
 
@@ -91,5 +92,8 @@ private:
     void CreateDeckViewUI(const EngineContext& context); // 초기화 시 UI 생성
     void OpenDeckView(const EngineContext& context);     // 창 열기
     void CloseDeckView(const EngineContext& context);    // 창 닫기
-    void UpdateDeckViewInput(const EngineContext& context); // 창 열렸을 때 입력 처리
+
+    float shakeTimer = 0.0f;     
+    float shakeIntensity = 0.0f; 
+    glm::vec2 originalCamPos = { 0.0f, 0.0f };
 };
