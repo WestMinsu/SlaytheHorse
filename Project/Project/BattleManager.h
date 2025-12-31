@@ -55,10 +55,9 @@ public:
     void DrawCard(const EngineContext& context, int count);
     void AddCard(const CardData& data, const EngineContext& context);
 
-    const std::vector<Card*>& GetHand() const
-    {
-        return hand;
-    }
+    const std::vector<Card*>& GetHand() const { return hand; }
+    const std::vector<Card*>& GetDeck() const { return deck; }
+    const std::vector<Card*>& GetDiscardPile() const { return discardPile; }
 
     void ClearAllCards();
     void DiscardCard(Card* card);

@@ -58,7 +58,7 @@ void Player::Init(const EngineContext& context)
         // 3. 속성 설정
         powerText->SetColor(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f)); // 노란색
         powerText->SetRenderLayer("[Layer]UIText"); // UI 레이어
-        powerText->GetTransform2D().SetDepth(900.0f); // 맨 위에 표시
+        powerText->GetTransform2D().SetDepth(hpBarText->GetTransform2D().GetDepth()); // 맨 위에 표시
 
         // 4. 위치 고정 (예: 플레이어 위치 기준 오른쪽 위)
         glm::vec2 fixedPos = hpBarText->GetTransform2D().GetPosition() + glm::vec2(48.0f, 0.0f);
