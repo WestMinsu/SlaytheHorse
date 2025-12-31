@@ -147,6 +147,12 @@ void Enemy::Attack(Player* player, float& currentTurnTime, const EngineContext& 
 
     switch (type)
     {
+    case EnemyType::Boss:
+        context.soundManager->Play("Boss");
+        player->ModifyHealth(-5, context);
+        currentTurnTime -= 5.0f;
+        attackDisplay->SetText(u8"최종 보스가 포효합니다!");
+        break;
     case EnemyType::Fast:
         player->ModifyHealth(-1, context);
         currentTurnTime -= 2.0f;
@@ -156,12 +162,6 @@ void Enemy::Attack(Player* player, float& currentTurnTime, const EngineContext& 
     case EnemyType::Angry:
         player->ModifyHealth(-3, context);
         attackDisplay->SetText(u8"성난 말이 강력하게 발길질합니다!");
-        break;
-
-    case EnemyType::Boss:
-        player->ModifyHealth(-5, context);
-        currentTurnTime -= 5.0f;
-        attackDisplay->SetText(u8"최종 보스가 포효합니다!");
         break;
 
     default:
@@ -195,7 +195,10 @@ void Enemy::ModifyHealth(int amount, const EngineContext& context)
             {
                 color = glm::vec4(1.0f, 0.2f, 0.2f, 1.0f);
                 msg = std::to_string(amount);
-                context.soundManager->Play("EnemyHitSFX");
+                if (isBoss)
+                    context.soundManager->Play("Boss");
+                else
+                    context.soundManager->Play("EnemyHitSFX");
             }
 
             static std::mt19937 rng(std::random_device{}());

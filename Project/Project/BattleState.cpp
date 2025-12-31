@@ -34,9 +34,9 @@ static std::string WrapTextLocal(const std::string& text, size_t maxLineLength)
 void BattleState::Init(const EngineContext& engineContext)
 {
     bossDialogues = {
-        { u8"히히힝! 나는야 진짜 말이라네!", u8"너 말 아니지?" },
-        { u8"무슨 소리! 이 완벽한 털과 근육을 보게!", u8"지퍼가 다 보이는데?" },
-        { u8"젠장! 들켰군! 하지만 내 타자는 피할 수 없다!", u8"덤벼라 가짜 말!" }
+        { u8"히히힝! 나는야 진짜 말이라네!", u8"너 말 아니지" },
+        { u8"무슨 소리! 이 완벽한 털과 근육을 보게!", u8"지퍼가 다 보이는데" },
+        { u8"젠장! 들켰군! 하지만 내 타자는 피할 수 없다!", u8"덤벼라 가짜 말" }
     };
     engineContext.renderManager->RegisterTexture("[Texture]Button", "Textures/test1.png");
     engineContext.renderManager->RegisterMaterial("[Material]Button", "[EngineShader]default_texture", { {"u_Texture","[Texture]Button"} });
@@ -66,7 +66,11 @@ void BattleState::Init(const EngineContext& engineContext)
     engineContext.soundManager->LoadSound("HitSFX", "TTS/Hit.mp3", false);
     engineContext.soundManager->LoadSound("DeathSFX", "TTS/Death.mp3", false);
     engineContext.soundManager->LoadSound("EnemyHitSFX", "TTS/EnemyHit.mp3", false);
-    engineContext.soundManager->LoadSound("BossHitSFX", "TTS/BossHit.mp3", false);
+    engineContext.soundManager->LoadSound("Boss", "TTS/Boss.mp3", false);
+    engineContext.soundManager->LoadSound("PlayerDialogue1", "TTS/PlayerDialogue1.mp3", false);
+    engineContext.soundManager->LoadSound("PlayerDialogue2", "TTS/PlayerDialogue2.mp3", false);
+    engineContext.soundManager->LoadSound("PlayerDialogue3", "TTS/PlayerDialogue3.mp3", false);
+
 
     battleManager = new BattleManager();
     battleManager->SetupDeck(engineContext);
@@ -130,6 +134,14 @@ void BattleState::Update(float dt, const EngineContext& context)
             player->ModifyHealth(-1, context);
             currentTurnTime = maxTurnTime;
             JIN_LOG(u8"보스의 압박!");
+            Font* font = context.renderManager->GetFontByTag("[Font]default");
+            if (font)
+            {
+                auto floatText = std::make_unique<FloatingText>(
+                    font, u8"말 대꾸 실패!", glm::vec2(0.0f, 50.0f), glm::vec4(1.0f, 0.2f, 0.2f, 1.0f)
+                );
+                objectManager.AddObject(std::move(floatText));
+            }
         }
 
         std::vector<Object*> enemies;
@@ -596,7 +608,10 @@ void BattleState::StartBossDialogue(const EngineContext& context)
 
     nextStageTargetText = bossDialogues[currentDialogueIdx].playerResponse;
     if (turnNoticeText)
+    {
+        context.soundManager->Play("Boss");
         turnNoticeText->SetText(bossDialogues[currentDialogueIdx].bossLine);
+    }
 
     auto cardObj = std::make_unique<Card>();
     cardObj->SetCardName(nextStageTargetText);
@@ -620,6 +635,9 @@ void BattleState::ProcessDialogueInput(const std::string& text, const EngineCont
 {
     if (text == nextStageTargetText)
     {
+        std::string sfxTag = "PlayerDialogue" + std::to_string(currentDialogueIdx + 1);
+        context.soundManager->Play(sfxTag);
+
         currentDialogueIdx++;
 
         if (currentDialogueIdx < bossDialogues.size())
@@ -627,7 +645,10 @@ void BattleState::ProcessDialogueInput(const std::string& text, const EngineCont
             nextStageTargetText = bossDialogues[currentDialogueIdx].playerResponse;
 
             if (turnNoticeText)
+            {
                 turnNoticeText->SetText(bossDialogues[currentDialogueIdx].bossLine);
+                context.soundManager->Play("Boss");
+            }
 
             if (nextStageCard)
                 nextStageCard->SetCardName(nextStageTargetText);
@@ -649,7 +670,7 @@ void BattleState::ProcessDialogueInput(const std::string& text, const EngineCont
             if (!enemyObjects.empty())
             {
                 Enemy* boss = static_cast<Enemy*>(enemyObjects[0]);
-                boss->SetAsBoss(context); 
+                boss->SetAsBoss(context);
             }
 
             if (turnNoticeText)
@@ -659,6 +680,19 @@ void BattleState::ProcessDialogueInput(const std::string& text, const EngineCont
             }
 
             battleManager->DrawCard(context, player->drawCardCnt);
+        }
+    }
+    else
+    {
+        player->ModifyHealth(-1, context);
+
+        Font* font = context.renderManager->GetFontByTag("[Font]default");
+        if (font)
+        {
+            auto floatText = std::make_unique<FloatingText>(
+                font, u8"말 대꾸 실패!", glm::vec2(0.0f, 50.0f), glm::vec4(1.0f, 0.2f, 0.2f, 1.0f)
+            );
+            objectManager.AddObject(std::move(floatText));
         }
     }
 }
