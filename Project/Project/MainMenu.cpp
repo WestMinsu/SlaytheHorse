@@ -19,9 +19,29 @@ void MainMenu::Init(const EngineContext& engineContext)
 	engineContext.renderManager->RegisterTexture("[Texture]Button", "Textures/test1.png");
 	engineContext.renderManager->RegisterMaterial("[Material]Button", "[EngineShader]default_texture", { {"u_Texture","[Texture]Button"} });
 
+	engineContext.renderManager->RegisterTexture("[Texture]Title", "Textures/Title.png");
+	engineContext.renderManager->RegisterMaterial("[Material]Title", "[EngineShader]default_texture", { {"u_Texture","[Texture]Title"} });
+
+	auto titleObj = std::make_unique<GameObject>();
+	titleObj->SetMesh(engineContext, "[EngineMesh]default");
+	titleObj->SetMaterial(engineContext, "[Material]Title");
+
+	// 3. 크기 및 위치 설정
+	titleObj->GetTransform2D().SetScale({ 512.0f, 304.0f }); // 이미지 원본 크기
+	titleObj->GetTransform2D().SetPosition({ 0.0f, 160.f });   // 화면 중앙 배치
+
+	// 4. Depth 설정 (중요: 버튼보다 뒤에 가도록 음수 값 설정)
+	// 버튼들의 기본 Depth는 0.0f이므로, 이보다 작으면 뒤에 그려집니다.
+	titleObj->GetTransform2D().SetDepth(-0.1f);
+
+	// 5. 오브젝트 등록
+	objectManager.AddObject(std::move(titleObj), "[Object]TitleImage");
+
 	mainText = static_cast<TextObject*>(objectManager.AddObject(std::make_unique<TextObject>(engineContext.renderManager->GetFontByTag("[Font]default"), "Slay The Horse", TextAlignH::Center, TextAlignV::Middle)));
 
 	mainText->GetTransform2D().SetPosition({ 0, 300.0f });
+
+	mainText->SetVisibility(false);
 
 	auto startButton = objectManager.AddObject(std::make_unique<Button>(glm::vec2(0, -100.f), glm::vec2(200.0f, 60.0f), "Start Game"), "[Object]button");
 	auto exitButton = objectManager.AddObject(std::make_unique<Button>(glm::vec2(0, -200.f), glm::vec2(200.0f, 60.0f), "Exit"), "[Object]button");
@@ -40,7 +60,9 @@ void MainMenu::Init(const EngineContext& engineContext)
 			};
 	}
 
-	engineContext.windowManager->SetBackgroundColor({0.2f, 0.2f, 0.2f, 0.2f });
+	engineContext.windowManager->SetBackgroundColor({0.2f, 0.2f, 0.2f, 1.f });
+
+	engineContext.windowManager->SetWindowIcon("Textures/Icon.png");
 	
 }
 
@@ -91,6 +113,9 @@ void MainMenu::Free(const EngineContext& engineContext)
 
 	engineContext.renderManager->UnregisterTexture("[Texture]Button", engineContext);
 	engineContext.renderManager->UnregisterMaterial("[Material]Button", engineContext);
+
+	engineContext.renderManager->UnregisterTexture("[Texture]Title", engineContext);
+	engineContext.renderManager->UnregisterMaterial("[Material]Title", engineContext);
 }
 
 void MainMenu::Unload(const EngineContext& engineContext)

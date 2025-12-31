@@ -40,6 +40,7 @@ public:
 
     void RemoveResizeCallback(const std::string& key);
 
+    void SetWindowIcon(const std::string& iconPath);
 private:
     bool Init(int _windowWidth, int _windowHeight, JinEngine& engine);
 
