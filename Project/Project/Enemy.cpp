@@ -12,8 +12,21 @@ Enemy::Enemy(const std::string& name, const glm::vec2& pos, EnemyType type_)
     : enemyName(name), type(type_), isBoss(false)
 {
     GetTransform2D().SetPosition(pos);
-    hp = 10;
-    maxHP = 10;
+    if (type == EnemyType::Angry)
+    {
+        hp = 15;
+        maxHP = 15;
+    }
+    else if (type == EnemyType::Fast)
+    {
+        hp = 20;
+        maxHP = 20;
+    }
+    else
+    {
+        hp = 10;
+        maxHP = 10;
+    }
 }
 
 Enemy::Enemy(const glm::vec2& pos, const glm::vec2& size)
@@ -154,13 +167,12 @@ void Enemy::Attack(Player* player, float& currentTurnTime, const EngineContext& 
         attackDisplay->SetText(u8"최종 보스가 포효합니다!");
         break;
     case EnemyType::Fast:
-        player->ModifyHealth(-1, context);
-        currentTurnTime -= 2.0f;
+        player->ModifyHealth(-3, context);
+        currentTurnTime -= 3.0f;
         attackDisplay->SetText(u8"빠른 말이 시간을 훔쳤습니다!");
         break;
-
     case EnemyType::Angry:
-        player->ModifyHealth(-3, context);
+        player->ModifyHealth(-4, context);
         attackDisplay->SetText(u8"성난 말이 강력하게 발길질합니다!");
         break;
 
