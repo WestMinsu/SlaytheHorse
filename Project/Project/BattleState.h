@@ -10,7 +10,8 @@ enum class TurnState
     PlayerTurn,
     EnemyTurn,
     Transition,
-    NextStageWait
+    NextStageWait,
+    CardSelect
 };
 
 class BattleState : public GameState
@@ -55,4 +56,8 @@ private:
     std::string GenerateRandomSpacedText();
 
     bool isSpawning = false;
+
+    std::vector<Card*> selectionCards;
+    void PrepareCardSelection(const EngineContext& context);
+    void OnSelectCard(int cardIndex, const EngineContext& context);
 };

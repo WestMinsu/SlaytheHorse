@@ -203,8 +203,8 @@ void Player::ModifyPower(int amount, const EngineContext& context)
         }
         else // 힘이 감소할 때 (필요하다면 사용, 여기서는 회색 처리 예시)
         {
-            color = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f);
-            msg = std::to_string(amount);
+           /* color = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f);
+            msg = std::to_string(amount);*/
 
             // context.soundManager->Play("DebuffSFX");
         }

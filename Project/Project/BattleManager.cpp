@@ -40,13 +40,6 @@ void BattleManager::SetupDeck(const EngineContext& context)
     AddCard(GlobalCardTemplates[GetCardIndex(u8"말차 한 잔")], context);
     AddCard(GlobalCardTemplates[GetCardIndex(u8"말차 한 잔")], context);
     AddCard(GlobalCardTemplates[GetCardIndex(u8"강한 발차기")], context);
-    AddCard(GlobalCardTemplates[GetCardIndex(u8"발차기")], context);
-    AddCard(GlobalCardTemplates[GetCardIndex(u8"발차기")], context);
-    AddCard(GlobalCardTemplates[GetCardIndex(u8"발차기")], context);
-    AddCard(GlobalCardTemplates[GetCardIndex(u8"말차 한 잔")], context);
-    AddCard(GlobalCardTemplates[GetCardIndex(u8"말차 한 잔")], context);
-    AddCard(GlobalCardTemplates[GetCardIndex(u8"말차 한 잔")], context);
-    AddCard(GlobalCardTemplates[GetCardIndex(u8"강한 발차기")], context);
 
     std::shuffle(deck.begin(), deck.end(), std::mt19937(std::random_device()()));
 }
