@@ -21,6 +21,7 @@ Enemy::Enemy(const glm::vec2& pos, const glm::vec2& size)
 {
     GetTransform2D().SetPosition(pos);
     GetTransform2D().SetScale(size);
+    basePosition = pos;
     hp = 30;
     maxHP = 30;
 }
@@ -91,19 +92,40 @@ void Enemy::Init(const EngineContext& engineContext)
 void Enemy::Update(float dt, const EngineContext& engineContext)
 {
     totalTime += dt;
-    float speed = (type == EnemyType::Fast) ? 20.0f : 5.0f;
+
+    float speed = 5.0f;
     float amplitude = 15.0f;
+
+    if (isBoss)
+    {
+        float healthRatio = (float)hp / maxHP;
+        if (healthRatio < 0.0f)
+            healthRatio = 0.0f;
+
+        speed = 3.0f + (1.0f - healthRatio) * 15.0f;
+        amplitude = 10.0f + (1.0f - healthRatio) * 35.0f;
+    }
+    else
+    {
+        speed = (type == EnemyType::Fast) ? 20.0f : 5.0f;
+    }
+
     float hoverOffset = sin(totalTime * speed) * amplitude;
-    glm::vec2 basePos = GetTransform2D().GetPosition();
+    glm::vec2 currentBasePos = isBoss ? basePosition : GetTransform2D().GetPosition();
+
+    if (isBoss)
+        GetTransform2D().SetPosition({ currentBasePos.x, currentBasePos.y + hoverOffset });
+
+    float uiYOffset = isBoss ? 50.0f : 0.0f;
 
     if (nameDisplay)
-        nameDisplay->GetTransform2D().SetPosition({ basePos.x, basePos.y + hoverOffset });
+        nameDisplay->GetTransform2D().SetPosition({ currentBasePos.x, currentBasePos.y + hoverOffset });
 
     if (attackDisplay)
-        attackDisplay->GetTransform2D().SetPosition({ basePos.x, basePos.y + 85.0f + hoverOffset });
+        attackDisplay->GetTransform2D().SetPosition({ currentBasePos.x, currentBasePos.y + 85.0f + uiYOffset + hoverOffset });
 
     if (hpBar)
-        hpBar->GetTransform2D().SetPosition({ basePos.x, basePos.y + 55.0f + hoverOffset });
+        hpBar->GetTransform2D().SetPosition({ currentBasePos.x, currentBasePos.y + 55.0f + uiYOffset + hoverOffset });
 
     if (hpBarText && hpBar)
         hpBarText->GetTransform2D().SetPosition(hpBar->GetTransform2D().GetPosition());
@@ -193,8 +215,36 @@ void Enemy::ModifyHealth(int amount, const EngineContext& context)
     }
 }
 
-void Enemy::KillAll()
+void Enemy::SetAsBoss(const EngineContext& context)
 {
+    isBoss = true;
+    type = EnemyType::Boss;
+    basePosition = GetTransform2D().GetPosition();
+    SetMaterial(context, "[Material]Boss");
+}
+
+void Enemy::KillAll(const EngineContext& context)
+{
+    if (type == EnemyType::Boss)
+    {
+        Font* font = context.renderManager->GetFontByTag("[Font]default");
+        glm::vec2 bossPos = GetTransform2D().GetPosition();
+
+        static std::mt19937 rng(std::random_device{}());
+        std::uniform_real_distribution<float> dist(-100.0f, 100.0f);
+
+        for (int i = 0; i < 15; i++)
+        {
+            glm::vec2 spawnPos = bossPos + glm::vec2(dist(rng), dist(rng));
+            auto horsePiece = std::make_unique<FloatingText>(
+                font, "Horse", spawnPos, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)
+            );
+
+            GameState* state = context.stateManager->GetCurrentState();
+            if (state)
+                state->GetObjectManager().AddObject(std::move(horsePiece));
+        }
+    }
     if (nameDisplay) 
         nameDisplay->Kill();
     if (attackDisplay) 
