@@ -105,7 +105,8 @@ void BattleState::Update(float dt, const EngineContext& context)
 
     if (currentState == TurnState::NextStageWait)
     {
-        currentTurnTime -= dt;
+        if (!player->IsDead())
+            currentTurnTime -= dt;
 
         if (currentTurnTime <= 0.0f)
         {
@@ -127,40 +128,28 @@ void BattleState::Update(float dt, const EngineContext& context)
     if (currentState == TurnState::PlayerTurn)
     {
         if (turnNoticeText)
-        {
             turnNoticeText->SetText(u8"");
-        }
 
-        if (currentTurnTime > 0.0f)
-        {
+        if (currentTurnTime > 0.0f && !player->IsDead())
             currentTurnTime -= dt;
-        }
 
         if (currentTurnTime <= 0.0f)
         {
             currentTurnTime = 0.0f;
             if (inputField)
-            {
                 inputField->SetInteractable(false);
-            }
 
             battleManager->DiscardAllCardFromHand();
-
             currentState = TurnState::EnemyTurn;
             transitionTimer = 1.5f;
 
             JIN_LOG(u8"적의 턴 시작!");
-
         }
     }
     else if (currentState == TurnState::EnemyTurn)
     {
         if (turnNoticeText)
-        {
-
             turnNoticeText->SetText(u8"적 턴 입니다.");
-
-        }
 
         transitionTimer -= dt;
 
@@ -255,12 +244,13 @@ void BattleState::OnProcessInput(const std::string& text, const EngineContext& c
         if (text == nextStageTargetText)
         {
             if (nextStageCard)
+            {
                 nextStageCard->KillAll();
+            }
 
             nextStageCard = nullptr;
-            battleManager->SetupDeck(context);
-            battleManager->DrawCard(context, 5);
             SpawnNextEnemy(context);
+            battleManager->DrawCard(context, 5);
 
             maxTurnTime = 10.0f;
             currentTurnTime = maxTurnTime;
@@ -274,19 +264,21 @@ void BattleState::OnProcessInput(const std::string& text, const EngineContext& c
 
             nextStageTargetText = GenerateRandomSpacedText();
             if (nextStageCard)
+            {
                 nextStageCard->SetCardName(nextStageTargetText);
+            }
 
-            currentTurnTime = 2.5f; 
+            currentTurnTime = 2.5f;
 
             JIN_LOG(u8"오타! 체력이 1 깎였습니다: " << nextStageTargetText);
 
+            return; 
         }
     }
 
     JIN_LOG("Player typed: " << text);
 
     Font* font = context.renderManager->GetFontByTag("[Font]default");
-
 
     glm::vec2 spawnPos = { 0.0f, 50.0f };
 
@@ -307,7 +299,6 @@ void BattleState::OnProcessInput(const std::string& text, const EngineContext& c
 
                 GetObjectManager().AddObject(std::move(floatText));
             }
-
             return;
         }
     }
@@ -353,6 +344,11 @@ void BattleState::SpawnNextEnemy(const EngineContext& context)
 
 void BattleState::PrepareNextStageTransition(const EngineContext& context)
 {
+    if (battleManager != nullptr)
+    {
+        battleManager->DiscardAllCardFromHand();
+    }
+
     currentState = TurnState::NextStageWait;
     maxTurnTime = 2.5f;
     currentTurnTime = maxTurnTime;
@@ -361,9 +357,7 @@ void BattleState::PrepareNextStageTransition(const EngineContext& context)
 
     auto cardObj = std::make_unique<Card>();
     cardObj->SetCardName(nextStageTargetText);
-
     cardObj->SetCardDescription(u8"다음 단계로 이동합니다");
-
     cardObj->GetTransform2D().SetPosition({ 0.0f, 0.0f });
 
     nextStageCard = cardObj.get();

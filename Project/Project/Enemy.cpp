@@ -151,15 +151,12 @@ void Enemy::Attack(Player* player, float& currentTurnTime, const EngineContext& 
 
 void Enemy::ModifyHealth(int amount, const EngineContext& context)
 {
-    // 체력 변경
     hp = std::max(0, hp + amount);
 
-    // 체력바 텍스트 갱신
     if (hpBarText)
         hpBarText->SetText(std::to_string(hp));
 
-    // --- FloatingText (데미지/힐 텍스트) 생성 로직 ---
-    if (amount != 0) // 변화가 있을 때만 표시
+    if (amount != 0) 
     {
         Font* font = context.renderManager->GetFontByTag("[Font]default");
         if (font)
@@ -169,32 +166,24 @@ void Enemy::ModifyHealth(int amount, const EngineContext& context)
 
             if (amount > 0)
             {
-                // 회복: 초록색 (R:0.2, G:1.0, B:0.2), "+n" 형태
                 color = glm::vec4(0.2f, 1.0f, 0.2f, 1.0f);
                 msg = "+" + std::to_string(amount);
             }
-            else // amount < 0
+            else 
             {
-                // 데미지: 빨간색 (R:1.0, G:0.2, B:0.2), "-n" 형태 (음수는 자동으로 -가 붙음)
                 color = glm::vec4(1.0f, 0.2f, 0.2f, 1.0f);
                 msg = std::to_string(amount);
-
-                // 피격 효과음 재생 (기존 코드 유지)
                 context.soundManager->Play("EnemyHitSFX");
             }
 
-            // 랜덤 위치 계산 (적 위치 기준 X, Y 각각 -30 ~ +30 범위 내 랜덤)
             static std::mt19937 rng(std::random_device{}());
             std::uniform_real_distribution<float> dist(-30.0f, 30.0f);
 
             glm::vec2 enemyPos = this->GetTransform2D().GetPosition();
-            // Y축으로 +50.0f를 더해 머리 위쪽 쯤에 뜨게 설정
             glm::vec2 spawnPos = enemyPos + glm::vec2(dist(rng), dist(rng) + 50.0f);
 
-            // FloatingText 생성
             auto floatText = std::make_unique<FloatingText>(font, msg, spawnPos, color);
 
-            // ObjectManager에 등록하여 화면에 표시 및 업데이트
             GameState* state = context.stateManager->GetCurrentState();
             if (state)
             {
@@ -206,9 +195,13 @@ void Enemy::ModifyHealth(int amount, const EngineContext& context)
 
 void Enemy::KillAll()
 {
-    if (nameDisplay) nameDisplay->Kill();
-    if (attackDisplay) attackDisplay->Kill();
-    if (hpBar) hpBar->Kill();
-    if (hpBarText) hpBarText->Kill();
+    if (nameDisplay) 
+        nameDisplay->Kill();
+    if (attackDisplay) 
+        attackDisplay->Kill();
+    if (hpBar) 
+        hpBar->Kill();
+    if (hpBarText) 
+        hpBarText->Kill();
     this->Kill();
 }
