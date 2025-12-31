@@ -1,6 +1,7 @@
 ﻿#include "gl.h"
 #include "glfw3.h"
 #include "Engine.h"
+#include "stb_image.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -208,4 +209,35 @@ void WindowManager::NotifyResize(int width, int height)
         if (callback)
             callback(width, height);
     }
+}
+
+void WindowManager::SetWindowIcon(const std::string& iconPath)
+{
+    if (!window) return;
+
+    stbi_set_flip_vertically_on_load(false);
+
+    GLFWimage images[1];
+    int channels;
+
+    // 1. 이미지 로드 (원하는 경로의 아이콘 파일)
+    // stbi_load는 Texture.cpp 등에서 이미 사용 중이므로 링크 가능할 것입니다.
+    images[0].pixels = stbi_load(iconPath.c_str(), &images[0].width, &images[0].height, &channels, 4); // RGBA 4채널 강제
+
+    if (images[0].pixels)
+    {
+        // 2. GLFW에 아이콘 설정
+        glfwSetWindowIcon(window, 1, images);
+
+        // 3. 메모리 해제
+        stbi_image_free(images[0].pixels);
+
+        JIN_LOG("Icon set successfully: " << iconPath);
+    }
+    else
+    {
+        JIN_ERR("Failed to load window icon: " << iconPath);
+    }
+
+    stbi_set_flip_vertically_on_load(true);
 }

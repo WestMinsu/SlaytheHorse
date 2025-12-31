@@ -6,6 +6,7 @@
 #include "MainMenu.h"
 #include <random>
 #include "FloatingText.h"
+#include "Button.h"
 
 static std::string WrapTextLocal(const std::string& text, size_t maxLineLength)
 {
@@ -72,6 +73,8 @@ void BattleState::Init(const EngineContext& engineContext)
     engineContext.soundManager->LoadSound("PlayerDialogue3", "TTS/PlayerDialogue3.mp3", false);
 
 
+    engineContext.soundManager->LoadSound("WinSFX", "TTS/Win.mp3", false);
+
     battleManager = new BattleManager();
     battleManager->SetupDeck(engineContext);
 
@@ -123,6 +126,16 @@ void BattleState::Init(const EngineContext& engineContext)
 void BattleState::Update(float dt, const EngineContext& context)
 {
     GameState::Update(dt, context);
+
+    if (currentState == TurnState::Ending)
+    {
+        if (player)
+        {
+            // 플레이어 계속 회전 (초당 90도)
+            player->GetTransform2D().AddRotation(glm::radians(360.0f) * dt);
+        }
+        return; // 다른 업데이트 로직(타이머, 적 공격 등) 실행 안 함
+    }
 
     if (currentState == TurnState::BossDialogue)
     {
@@ -202,8 +215,16 @@ void BattleState::Update(float dt, const EngineContext& context)
 
     if (enemies.empty())
     {
-        if (currentState != TurnState::NextStageWait && currentState != TurnState::CardSelect && currentRound < 4)
+        if (currentRound == 4 && currentState != TurnState::Ending)
+        {
+            StartEnding(context);
+            return;
+        }
+        // 일반 스테이지 클리어
+        else if (currentState != TurnState::NextStageWait && currentState != TurnState::CardSelect && currentRound < 4)
+        {
             PrepareNextStageTransition(context);
+        }
     }
     else
     {
@@ -990,4 +1011,75 @@ void BattleState::CloseDeckView(const EngineContext& context)
         card->KillAll();
     }
     deckViewCards.clear();
+}
+
+// [BattleState.cpp] 하단에 추가
+
+void BattleState::StartEnding(const EngineContext& context)
+{
+    JIN_LOG("게임 승리! 엔딩 시작");
+    currentState = TurnState::Ending;
+
+    context.soundManager->Play("WinSFX");
+
+    // 1. 기존 UI 숨기기
+    if (timerText) timerText->SetVisibility(false);
+    if (timerBar) timerBar->SetVisibility(false);
+    if (deckButton) deckButton->SetVisibility(false);
+    if (deckButtonText) deckButtonText->SetVisibility(false);
+    if (inputField)
+    {
+        inputField->SetInteractable(false);
+        inputField->SetVisibility(false);
+    }
+    if (turnNoticeText) turnNoticeText->SetVisibility(false);
+
+    // 덱 보기 창이 열려있다면 닫기
+    if (isDeckViewOpen) CloseDeckView(context);
+
+    // 2. 핸드 카드 숨기기 (버림 처리하여 화면에서 제거)
+    if (battleManager)
+    {
+        battleManager->DiscardAllCardFromHand();
+        // 버려진 카드들도 화면에 안 보이게 확실히 처리
+        for (auto* card : battleManager->GetDiscardPile())
+        {
+            card->SetVisibilityAll(false);
+        }
+    }
+
+    // 3. 플레이어 이동 (화면 중앙)
+    if (player)
+    {
+        player->GetTransform2D().SetPosition({ 0.0f, 0.0f });
+        // 플레이어 UI(체력바 등)가 Player 클래스 내부에 있다면 
+        // Player 클래스에 UI 숨기는 함수를 추가해서 호출해야 할 수 있음.
+        // 예: player->HideUI(); 
+        player->HideUI();
+    }
+
+    // 4. "이겼습니다!" 텍스트 생성 (노란색)
+    auto font = context.renderManager->GetFontByTag("[Font]default");
+    auto winTextObj = std::make_unique<TextObject>(font, u8"이겼습니다!", TextAlignH::Center, TextAlignV::Middle);
+
+    winTextObj->GetTransform2D().SetPosition({ 0.0f, 150.0f }); // 플레이어 머리 위
+    winTextObj->GetTransform2D().SetScale({ 2.0f, 2.0f });      // 글자 크게
+    winTextObj->SetColor({ 1.0f, 1.0f, 0.0f, 1.0f });           // 노란색
+    winTextObj->SetRenderLayer("[Layer]UIText");
+
+    objectManager.AddObject(std::move(winTextObj));
+
+    // 5. "메인 메뉴" 버튼 생성 (플레이어 아래)
+    auto menuBtn = std::make_unique<Button>(
+        glm::vec2(0.0f, -200.0f),  // 위치
+        glm::vec2(200.0f, 60.0f),  // 크기
+        u8"메인 메뉴"               // 텍스트
+    );
+
+    // 버튼 클릭 시 메인 메뉴로 이동
+    menuBtn->onClick = [this](const EngineContext& ctx) {
+        this->ReturnToMainMenu(ctx);
+        };
+
+    objectManager.AddObject(std::move(menuBtn), "[Object]Button");
 }

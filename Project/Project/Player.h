@@ -15,6 +15,8 @@ public:
 
 	void ModifyPower(int amount, const EngineContext& context);
 
+	void HideUI();
+
 	bool IsDead() const
 	{
 		return isDead;
