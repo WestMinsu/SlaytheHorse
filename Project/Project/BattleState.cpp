@@ -248,37 +248,49 @@ void BattleState::Update(float dt, const EngineContext& context)
 
     if (currentState == TurnState::CardSelect)
     {
-        // 마우스 왼쪽 클릭 감지
-        if (context.inputManager->IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        // [수정] 덱 UI가 닫혀있을 때만 상호작용 가능
+        if (!isDeckViewOpen)
         {
-            Camera2D* activeCam = GetActiveCamera();
-            glm::vec2 mousePos = context.inputManager->GetMouseWorldPos(activeCam);
-
-            for (size_t i = 0; i < selectionCards.size(); ++i)
+            // 마우스 왼쪽 클릭 감지
+            if (context.inputManager->IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
             {
-                Card* card = selectionCards[i];
-                glm::vec4 bounds = card->GetBoundingBox();
+                Camera2D* activeCam = GetActiveCamera();
+                glm::vec2 mousePos = context.inputManager->GetMouseWorldPos(activeCam);
 
-                // 마우스가 카드 영역 안에 있는지 확인 (Hit Test)
-                if (mousePos.x >= bounds.x && mousePos.x <= bounds.y &&
-                    mousePos.y >= bounds.z && mousePos.y <= bounds.w)
+                for (size_t i = 0; i < selectionCards.size(); ++i)
                 {
-                    // 카드 선택됨
-                    OnSelectCard(i, context);
-                    break;
+                    Card* card = selectionCards[i];
+                    glm::vec4 bounds = card->GetBoundingBox();
+
+                    // 마우스가 카드 영역 안에 있는지 확인 (Hit Test)
+                    if (mousePos.x >= bounds.x && mousePos.x <= bounds.y &&
+                        mousePos.y >= bounds.z && mousePos.y <= bounds.w)
+                    {
+                        // 카드 선택됨
+                        OnSelectCard(i, context);
+                        break;
+                    }
                 }
             }
-        }
 
-        // 마우스 호버 효과 (선택적)
-        Camera2D* activeCam = GetActiveCamera();
-        glm::vec2 mousePos = context.inputManager->GetMouseWorldPos(activeCam);
-        for (auto* card : selectionCards)
+            // 마우스 호버 효과
+            Camera2D* activeCam = GetActiveCamera();
+            glm::vec2 mousePos = context.inputManager->GetMouseWorldPos(activeCam);
+            for (auto* card : selectionCards)
+            {
+                glm::vec4 bounds = card->GetBoundingBox();
+                bool isMouseOver = (mousePos.x >= bounds.x && mousePos.x <= bounds.y &&
+                    mousePos.y >= bounds.z && mousePos.y <= bounds.w);
+                card->SetHoverState(isMouseOver);
+            }
+        }
+        else
         {
-            glm::vec4 bounds = card->GetBoundingBox();
-            bool isMouseOver = (mousePos.x >= bounds.x && mousePos.x <= bounds.y &&
-                mousePos.y >= bounds.z && mousePos.y <= bounds.w);
-            card->SetHoverState(isMouseOver);
+            // 덱 UI가 열려있다면, 선택지 카드들의 호버 상태를 강제로 끕니다 (선택 사항)
+            for (auto* card : selectionCards)
+            {
+                card->SetHoverState(false);
+            }
         }
     }
 
